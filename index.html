@@ -1,0 +1,1760 @@
+<title>Mr. Brown CRM</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --creme: #faf5ec;
+    --surface: #ffffff;
+    --surface-2: #f2e7d4;
+    --linha: #e6d9c2;
+    --tinta: #241a13;
+    --cinza: #7c6a5d;
+    --marrom: #5a3322;
+    --marrom-esc: #3a2017;
+    --azul: #34a9dd;
+    --azul-esc: #1f87b8;
+    --azul-tint: #e3f3fb;
+    --ouro: #c9a24b;
+    --ouro-tint: #f7ecd2;
+    --verde: #3f8a4b;
+    --verde-tint: #e2f1e3;
+    --vermelho: #b6453b;
+    --vermelho-tint: #f6e1de;
+    --sombra: 0 18px 50px -20px rgba(58,32,23,.30);
+    --raio: 14px;
+    --fonte-titulo: "Montserrat", "Segoe UI", Arial, sans-serif;
+    --fonte-texto: "Inter", "Segoe UI", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --creme: #1d130e; --surface: #2a1c14; --surface-2: #34241b; --linha: #46332a;
+      --tinta: #f3e9da; --cinza: #b8a496; --marrom: #e9d6bf; --marrom-esc: #f3e9da;
+      --azul-tint: #163647; --ouro-tint: #3e3218; --verde-tint: #1d3a22; --vermelho-tint: #45211d;
+      --sombra: 0 18px 50px -20px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --creme: #1d130e; --surface: #2a1c14; --surface-2: #34241b; --linha: #46332a;
+    --tinta: #f3e9da; --cinza: #b8a496; --marrom: #e9d6bf; --marrom-esc: #f3e9da;
+    --azul-tint: #163647; --ouro-tint: #3e3218; --verde-tint: #1d3a22; --vermelho-tint: #45211d;
+    --sombra: 0 18px 50px -20px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--creme); color: var(--tinta);
+    font-family: var(--fonte-texto); font-size: 15px; line-height: 1.5;
+    padding-block: 0 48px; padding-inline: 20px;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--azul); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .muted { color: var(--cinza); }
+
+  /* ---------- Topo ---------- */
+  .topo {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding-block: 18px 0; border-bottom: 3px solid var(--azul); margin-bottom: 20px;
+  }
+  .topo img { width: 60px; height: 60px; border-radius: 50%; background: #fff; flex: none; margin-bottom: 12px; }
+  .marca { display: flex; flex-direction: column; margin-bottom: 12px; }
+  .marca h1 { margin: 0; font-family: var(--fonte-titulo); font-weight: 800; font-size: 24px; line-height: 1.1; color: var(--marrom); letter-spacing: -.01em; }
+  .marca h1 span { color: var(--azul); }
+  .marca small { color: var(--cinza); font-size: 13px; }
+  .abas { display: flex; gap: 2px; margin-left: auto; align-self: flex-end; }
+  .abas button {
+    border: 0; background: transparent; padding: 10px 16px 12px; font-weight: 600; color: var(--cinza);
+    border-bottom: 3px solid transparent; margin-bottom: -3px; display: inline-flex; gap: 8px; align-items: center;
+    font-family: var(--fonte-titulo); font-size: 14px;
+  }
+  .abas button:hover { color: var(--marrom); }
+  .abas button[aria-selected="true"] { color: var(--marrom); border-bottom-color: var(--marrom); }
+  .abas .badge { background: var(--surface-2); color: var(--cinza); border-radius: 999px; font-size: 11px; padding: 1px 7px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Botões ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px;
+    border: 1.5px solid var(--linha); background: var(--surface); color: var(--tinta); font-weight: 600; font-size: 14px;
+    transition: background .15s, border-color .15s, transform .1s; white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--azul); }
+  .btn:active { transform: translateY(1px); }
+  .btn-primario { background: var(--azul); border-color: var(--azul); color: #fff; }
+  .btn-primario:hover { background: var(--azul-esc); border-color: var(--azul-esc); }
+  .btn-perigo { color: var(--vermelho); }
+  .btn-perigo:hover { border-color: var(--vermelho); }
+  .btn-sutil { border-color: transparent; background: transparent; color: var(--cinza); padding: 6px 10px; }
+  .btn-sutil:hover { background: var(--surface-2); color: var(--tinta); }
+  .btn-icone { padding: 6px 8px; }
+
+  /* ---------- Funil ---------- */
+  .funil { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .funil button {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 14px;
+    border-radius: var(--raio); border: 1.5px solid var(--linha); background: var(--surface);
+    text-align: left; position: relative; overflow: hidden; transition: border-color .15s, box-shadow .15s;
+  }
+  .funil button::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--cor, var(--azul)); }
+  .funil button:hover { border-color: var(--cor, var(--azul)); }
+  .funil button[aria-pressed="true"] { border-color: var(--cor, var(--azul)); box-shadow: 0 0 0 3px var(--tint, var(--azul-tint)); }
+  .funil .n { font-family: var(--fonte-titulo); font-weight: 800; font-size: 26px; line-height: 1; color: var(--marrom); font-variant-numeric: tabular-nums; }
+  .funil .l { font-size: 12px; font-weight: 600; color: var(--cinza); letter-spacing: .04em; text-transform: uppercase; }
+
+  /* ---------- Barra ---------- */
+  .barra { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .campo { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1.5px solid var(--linha); border-radius: 999px; padding: 8px 14px; min-width: 0; }
+  .campo:focus-within { border-color: var(--azul); }
+  .campo input, .campo select { border: 0; background: transparent; outline: 0; min-width: 0; width: 100%; }
+  .campo.busca { flex: 1 1 240px; }
+  .campo svg { flex: none; color: var(--cinza); }
+  .barra .contador { color: var(--cinza); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .segment { display: inline-flex; background: var(--surface-2); border-radius: 999px; padding: 3px; }
+  .segment button { border: 0; background: transparent; border-radius: 999px; padding: 6px 14px; font-weight: 600; font-size: 13px; color: var(--cinza); display: inline-flex; gap: 6px; align-items: center; }
+  .segment button[aria-pressed="true"] { background: var(--surface); color: var(--marrom); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .empurra { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+  /* ---------- Painel / tabela ---------- */
+  .painel { background: var(--surface); border: 1.5px solid var(--linha); border-radius: var(--raio); box-shadow: var(--sombra); overflow: hidden; }
+  .tabela-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px 14px; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--linha); }
+  th { font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--cinza); background: var(--surface-2); white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: color-mix(in srgb, var(--surface-2) 45%, transparent); }
+  td.nome { font-weight: 600; color: var(--marrom); }
+  .tag-ex { display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--cinza); border: 1px dashed var(--linha); border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
+  .tag-site { display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--azul-esc); background: var(--azul-tint); border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
+  td.data { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.data small { display: block; color: var(--cinza); font-size: 12px; }
+  td.data.atrasado small { color: var(--vermelho); font-weight: 600; }
+  td.objetivo { max-width: 300px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.acoes { white-space: nowrap; text-align: right; }
+  td.acoes button { margin-left: 2px; }
+  .sub { display: block; font-size: 12px; color: var(--cinza); font-weight: 400; }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px 4px 8px; font-size: 13px; font-weight: 600; background: var(--tint); color: var(--cor); white-space: nowrap; }
+  .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--cor); flex: none; }
+  .pill select {
+    appearance: none; -webkit-appearance: none; border: 0; background: transparent; color: inherit; font-weight: 600; padding: 0 14px 0 0; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%237c6a5d' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right center;
+  }
+  .pill select:focus-visible { outline-offset: 4px; }
+  .pill.mini { font-size: 12px; padding: 2px 8px 2px 7px; }
+
+  .vazio { padding: 44px 20px; text-align: center; color: var(--cinza); }
+  .vazio strong { display: block; font-family: var(--fonte-titulo); color: var(--marrom); font-size: 18px; margin-bottom: 6px; }
+
+  /* ---------- Kanban ---------- */
+  .kanban { display: grid; grid-template-columns: repeat(6, minmax(200px, 1fr)); gap: 12px; overflow-x: auto; padding-bottom: 8px; align-items: start; }
+  .coluna { background: var(--surface-2); border-radius: var(--raio); min-height: 220px; display: flex; flex-direction: column; border: 2px dashed transparent; transition: border-color .15s, background .15s; }
+  .coluna.sobre { border-color: var(--cor); background: var(--tint); }
+  .coluna-cab { display: flex; align-items: center; gap: 8px; padding: 12px 12px 8px; font-family: var(--fonte-titulo); font-weight: 700; font-size: 13px; color: var(--marrom); border-top: 4px solid var(--cor); border-radius: var(--raio) var(--raio) 0 0; }
+  .coluna-cab .qtd { margin-left: auto; font-weight: 600; color: var(--cinza); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .cartoes { display: flex; flex-direction: column; gap: 8px; padding: 4px 8px 10px; flex: 1; }
+  .cartao { background: var(--surface); border: 1.5px solid var(--linha); border-radius: 10px; padding: 10px 12px; cursor: grab; box-shadow: 0 1px 2px rgba(58,32,23,.08); transition: box-shadow .15s, transform .15s; text-align: left; width: 100%; }
+  .cartao:hover { box-shadow: 0 6px 18px -8px rgba(58,32,23,.35); border-color: var(--azul); }
+  .cartao.arrastando { opacity: .45; transform: rotate(1.5deg); }
+  .cartao .c-nome { font-weight: 600; color: var(--marrom); display: block; }
+  .cartao .c-emp { font-size: 13px; color: var(--cinza); display: block; }
+  .cartao .c-obj { font-size: 13px; margin-top: 6px; display: block; }
+  .cartao .c-pe { display: flex; gap: 8px; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--cinza); font-variant-numeric: tabular-nums; }
+  .cartao .c-pe .alerta { color: var(--vermelho); font-weight: 600; }
+  .cartao .c-pe .pedidos { color: var(--azul-esc); font-weight: 600; }
+  .coluna .vazio-col { padding: 14px 8px; text-align: center; font-size: 12px; color: var(--cinza); }
+
+  /* ---------- Produtos ---------- */
+  .grade-prod { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .prod { background: var(--surface); border: 1.5px solid var(--linha); border-radius: var(--raio); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; position: relative; }
+  .prod.inativo { opacity: .55; }
+  .prod .p-cab { display: flex; align-items: flex-start; gap: 8px; }
+  .prod h3 { margin: 0; font-family: var(--fonte-titulo); font-weight: 700; font-size: 16px; color: var(--marrom); flex: 1; }
+  .prod .p-selo { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ouro); border: 1px solid var(--ouro); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+  .prod p { margin: 0; font-size: 13px; color: var(--cinza); flex: 1; }
+  .prod .p-pe { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .prod .preco { font-family: var(--fonte-titulo); font-weight: 800; font-size: 18px; color: var(--marrom); font-variant-numeric: tabular-nums; }
+  .prod .preco.indef { font-size: 12px; font-weight: 600; color: var(--ouro); text-transform: uppercase; letter-spacing: .04em; }
+  .prod .cat { font-size: 12px; color: var(--cinza); }
+  .prod .p-pe .btn { margin-left: auto; }
+
+  /* ---------- Rodapé ---------- */
+  .rodape { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; color: var(--cinza); font-size: 13px; }
+  .rodape .esp { flex: 1; }
+
+  /* ---------- Modal ---------- */
+  dialog { border: 0; border-radius: var(--raio); padding: 0; background: var(--surface); color: var(--tinta); width: min(560px, calc(100vw - 32px)); box-shadow: var(--sombra); }
+  dialog.larga { width: min(720px, calc(100vw - 32px)); }
+  dialog::backdrop { background: rgba(36,26,19,.55); }
+  dialog form { padding: 22px 22px 18px; display: grid; gap: 14px; }
+  dialog h2 { margin: 0 0 4px; font-family: var(--fonte-titulo); font-weight: 800; font-size: 20px; color: var(--marrom); }
+  .grupo { display: grid; gap: 5px; }
+  .grupo label { font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--cinza); }
+  .grupo input, .grupo select, .grupo textarea { border: 1.5px solid var(--linha); border-radius: 10px; padding: 10px 12px; background: var(--creme); width: 100%; }
+  .grupo input:focus, .grupo select:focus, .grupo textarea:focus { border-color: var(--azul); outline: 0; }
+  .grupo textarea { resize: vertical; min-height: 60px; }
+  .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tres { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .modal-acoes { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; flex-wrap: wrap; }
+  .modal-acoes .esp { flex: 1; }
+  dialog p { margin: 0; color: var(--cinza); }
+  .check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .check input { width: auto; }
+
+  /* Itens do pedido */
+  .itens { display: grid; gap: 8px; }
+  .item { display: grid; grid-template-columns: 1fr 72px 110px 100px 36px; gap: 8px; align-items: center; }
+  .item select, .item input { border: 1.5px solid var(--linha); border-radius: 10px; padding: 8px 10px; background: var(--creme); width: 100%; min-width: 0; }
+  .item select:focus, .item input:focus { border-color: var(--azul); outline: 0; }
+  .item .sub-total { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+  .itens-cab { display: grid; grid-template-columns: 1fr 72px 110px 100px 36px; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--cinza); }
+  .total-linha { display: flex; justify-content: space-between; align-items: baseline; border-top: 1.5px solid var(--linha); padding-top: 10px; }
+  .total-linha .total { font-family: var(--fonte-titulo); font-weight: 800; font-size: 22px; color: var(--marrom); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Toast ---------- */
+  .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(20px); background: var(--marrom-esc); color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 600; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50; }
+  :root[data-theme="dark"] .toast { background: var(--azul-esc); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .toast { background: var(--azul-esc); } }
+  .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Celular ---------- */
+  @media (max-width: 960px) { .funil { grid-template-columns: repeat(3, minmax(0, 1fr)); } .kanban { grid-template-columns: repeat(6, 230px); } }
+  @media (max-width: 640px) {
+    body { padding-inline: 16px; }
+    .funil { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .topo img { width: 48px; height: 48px; }
+    .abas { margin-left: 0; width: 100%; overflow-x: auto; }
+    .abas button { padding: 8px 12px 10px; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; }
+    tr { padding: 12px 14px; border-bottom: 1px solid var(--linha); }
+    tr:last-child { border-bottom: 0; }
+    td { padding: 3px 0; border: 0; }
+    td.nome { font-size: 16px; }
+    td.rotulo::before { content: attr(data-rotulo) " · "; color: var(--cinza); }
+    td.data small { display: inline; margin-left: 6px; }
+    td.objetivo { max-width: none; }
+    td.num { text-align: left; }
+    td.acoes { text-align: left; padding-top: 8px; }
+    .duas, .tres { grid-template-columns: 1fr; }
+    .item, .itens-cab { grid-template-columns: 1fr 60px 90px 80px 32px; }
+    .itens-cab { display: none; }
+    .empurra { margin-left: 0; width: 100%; }
+  }
+
+  [hidden] { display: none !important; }
+
+  /* ---------- Usuário logado (topo) ---------- */
+  .usuario-topo { display: flex; align-items: center; gap: 10px; margin-left: auto; margin-bottom: 12px; font-size: 13px; color: var(--cinza); white-space: nowrap; }
+  .usuario-topo strong { color: var(--marrom); font-weight: 600; }
+  .usuario-topo + .abas { margin-left: 16px; }
+
+  /* ---------- Login ---------- */
+  .tela-login { min-height: calc(100vh - 48px); display: grid; place-items: center; padding-block: 40px 20px; }
+  .login-cartao { width: min(400px, 100%); background: var(--surface); border: 1.5px solid var(--linha); border-radius: var(--raio); box-shadow: var(--sombra); padding: 30px 28px 24px; display: grid; gap: 14px; }
+  .login-cartao img { width: 84px; height: 84px; border-radius: 50%; background: #fff; justify-self: center; }
+  .login-cartao h1 { margin: 0; text-align: center; font-family: var(--fonte-titulo); font-weight: 800; font-size: 24px; color: var(--marrom); letter-spacing: -.01em; }
+  .login-cartao h1 span { color: var(--azul); }
+  .login-cartao .sub-login { text-align: center; margin: -8px 0 2px; color: var(--cinza); font-size: 13px; }
+  .login-cartao form { display: grid; gap: 12px; }
+  .login-cartao .btn-primario { justify-content: center; width: 100%; padding: 11px 16px; }
+  .login-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+  .link { border: 0; background: none; padding: 0; color: var(--azul-esc); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
+  .link:hover { color: var(--azul); }
+  .aviso-erro { background: var(--vermelho-tint); color: var(--vermelho); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .aviso-ok { background: var(--verde-tint); color: var(--verde); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .boot-erro { max-width: 520px; margin: 60px auto; text-align: center; color: var(--cinza); }
+  .boot-erro strong { display: block; font-family: var(--fonte-titulo); color: var(--marrom); font-size: 18px; margin-bottom: 6px; }
+
+  /* ---------- Usuários ---------- */
+  .texto-apoio { margin: 0 0 14px; color: var(--cinza); font-size: 14px; max-width: 720px; }
+  .tag-voce { display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--verde); background: var(--verde-tint); border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
+
+  [hidden] { display: none !important; }
+
+  /* ---------- Usuário logado (topo) ---------- */
+  .usuario-topo { display: flex; align-items: center; gap: 10px; margin-left: auto; margin-bottom: 12px; font-size: 13px; color: var(--cinza); white-space: nowrap; }
+  .usuario-topo strong { color: var(--marrom); font-weight: 600; }
+  .usuario-topo + .abas { margin-left: 16px; }
+
+  /* ---------- Login ---------- */
+  .tela-login { min-height: calc(100vh - 48px); display: grid; place-items: center; padding-block: 40px 20px; }
+  .login-cartao { width: min(400px, 100%); background: var(--surface); border: 1.5px solid var(--linha); border-radius: var(--raio); box-shadow: var(--sombra); padding: 30px 28px 24px; display: grid; gap: 14px; }
+  .login-cartao img { width: 84px; height: 84px; border-radius: 50%; background: #fff; justify-self: center; }
+  .login-cartao h1 { margin: 0; text-align: center; font-family: var(--fonte-titulo); font-weight: 800; font-size: 24px; color: var(--marrom); letter-spacing: -.01em; }
+  .login-cartao h1 span { color: var(--azul); }
+  .login-cartao .sub-login { text-align: center; margin: -8px 0 2px; color: var(--cinza); font-size: 13px; }
+  .login-cartao form { display: grid; gap: 12px; }
+  .login-cartao .btn-primario { justify-content: center; width: 100%; padding: 11px 16px; }
+  .login-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+  .link { border: 0; background: none; padding: 0; color: var(--azul-esc); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
+  .link:hover { color: var(--azul); }
+  .aviso-erro { background: var(--vermelho-tint); color: var(--vermelho); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .aviso-ok { background: var(--verde-tint); color: var(--verde); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .boot-erro { max-width: 520px; margin: 60px auto; text-align: center; color: var(--cinza); }
+  .boot-erro strong { display: block; font-family: var(--fonte-titulo); color: var(--marrom); font-size: 18px; margin-bottom: 6px; }
+
+  /* ---------- Usuários ---------- */
+  .texto-apoio { margin: 0 0 14px; color: var(--cinza); font-size: 14px; max-width: 720px; }
+  .tag-voce { display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--verde); background: var(--verde-tint); border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
+
+  [hidden] { display: none !important; }
+
+  /* ---------- Usuário logado (topo) ---------- */
+  .usuario-topo { display: flex; align-items: center; gap: 10px; margin-left: auto; margin-bottom: 12px; font-size: 13px; color: var(--cinza); white-space: nowrap; }
+  .usuario-topo strong { color: var(--marrom); font-weight: 600; }
+  .usuario-topo + .abas { margin-left: 16px; }
+
+  /* ---------- Login ---------- */
+  .tela-login { min-height: calc(100vh - 48px); display: grid; place-items: center; padding-block: 40px 20px; }
+  .login-cartao { width: min(400px, 100%); background: var(--surface); border: 1.5px solid var(--linha); border-radius: var(--raio); box-shadow: var(--sombra); padding: 30px 28px 24px; display: grid; gap: 14px; }
+  .login-cartao img { width: 84px; height: 84px; border-radius: 50%; background: #fff; justify-self: center; }
+  .login-cartao h1 { margin: 0; text-align: center; font-family: var(--fonte-titulo); font-weight: 800; font-size: 24px; color: var(--marrom); letter-spacing: -.01em; }
+  .login-cartao h1 span { color: var(--azul); }
+  .login-cartao .sub-login { text-align: center; margin: -8px 0 2px; color: var(--cinza); font-size: 13px; }
+  .login-cartao form { display: grid; gap: 12px; }
+  .login-cartao .btn-primario { justify-content: center; width: 100%; padding: 11px 16px; }
+  .login-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+  .link { border: 0; background: none; padding: 0; color: var(--azul-esc); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
+  .link:hover { color: var(--azul); }
+  .aviso-erro { background: var(--vermelho-tint); color: var(--vermelho); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .aviso-ok { background: var(--verde-tint); color: var(--verde); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .boot-erro { max-width: 520px; margin: 60px auto; text-align: center; color: var(--cinza); }
+  .boot-erro strong { display: block; font-family: var(--fonte-titulo); color: var(--marrom); font-size: 18px; margin-bottom: 6px; }
+
+  /* ---------- Usuários ---------- */
+  .texto-apoio { margin: 0 0 14px; color: var(--cinza); font-size: 14px; max-width: 720px; }
+  .tag-voce { display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--verde); background: var(--verde-tint); border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
+
+  [hidden] { display: none !important; }
+
+  /* ---------- Usuário logado (topo) ---------- */
+  .usuario-topo { display: flex; align-items: center; gap: 10px; margin-left: auto; margin-bottom: 12px; font-size: 13px; color: var(--cinza); white-space: nowrap; }
+  .usuario-topo strong { color: var(--marrom); font-weight: 600; }
+  .usuario-topo + .abas { margin-left: 16px; }
+
+  /* ---------- Login ---------- */
+  .tela-login { min-height: calc(100vh - 48px); display: grid; place-items: center; padding-block: 40px 20px; }
+  .login-cartao { width: min(400px, 100%); background: var(--surface); border: 1.5px solid var(--linha); border-radius: var(--raio); box-shadow: var(--sombra); padding: 30px 28px 24px; display: grid; gap: 14px; }
+  .login-cartao img { width: 84px; height: 84px; border-radius: 50%; background: #fff; justify-self: center; }
+  .login-cartao h1 { margin: 0; text-align: center; font-family: var(--fonte-titulo); font-weight: 800; font-size: 24px; color: var(--marrom); letter-spacing: -.01em; }
+  .login-cartao h1 span { color: var(--azul); }
+  .login-cartao .sub-login { text-align: center; margin: -8px 0 2px; color: var(--cinza); font-size: 13px; }
+  .login-cartao form { display: grid; gap: 12px; }
+  .login-cartao .btn-primario { justify-content: center; width: 100%; padding: 11px 16px; }
+  .login-links { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+  .link { border: 0; background: none; padding: 0; color: var(--azul-esc); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
+  .link:hover { color: var(--azul); }
+  .aviso-erro { background: var(--vermelho-tint); color: var(--vermelho); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .aviso-ok { background: var(--verde-tint); color: var(--verde); border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 600; }
+  .boot-erro { max-width: 520px; margin: 60px auto; text-align: center; color: var(--cinza); }
+  .boot-erro strong { display: block; font-family: var(--fonte-titulo); color: var(--marrom); font-size: 18px; margin-bottom: 6px; }
+
+  /* ---------- Usuários ---------- */
+  .texto-apoio { margin: 0 0 14px; color: var(--cinza); font-size: 14px; max-width: 720px; }
+  .tag-voce { display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--verde); background: var(--verde-tint); border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
+</style>
+
+<!-- ================= LOGIN (só no modo Supabase) ================= -->
+<div id="tela-login" class="tela-login" hidden>
+  <div class="login-cartao">
+    <img id="login-logo" alt="Logo Mr. Brown Doces" width="84" height="84">
+    <h1>Mr. Brown <span>CRM</span></h1>
+    <p class="sub-login">Cookies recheados premiados · Alphaville, Barueri</p>
+
+    <form id="form-login" novalidate>
+      <div class="grupo"><label for="l-email">E-mail</label><input id="l-email" type="email" autocomplete="username" inputmode="email" required></div>
+      <div class="grupo"><label for="l-senha">Senha</label><input id="l-senha" type="password" autocomplete="current-password" required></div>
+      <div class="aviso-ok" id="login-ok" hidden></div>
+      <div class="aviso-erro" id="login-erro" role="alert" hidden></div>
+      <button class="btn btn-primario" id="btn-entrar" type="submit">Entrar</button>
+      <div class="login-links">
+        <button class="link" id="lnk-primeiro" type="button">Primeiro acesso? Criar senha</button>
+        <button class="link" id="lnk-esqueci" type="button">Esqueci minha senha</button>
+      </div>
+    </form>
+
+    <form id="form-primeiro" novalidate hidden>
+      <p class="sub-login">Use o e-mail que o administrador cadastrou na aba Usuários.</p>
+      <div class="grupo"><label for="c-email">E-mail</label><input id="c-email" type="email" autocomplete="username" inputmode="email" required></div>
+      <div class="grupo"><label for="c-senha">Senha</label><input id="c-senha" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" required></div>
+      <div class="grupo"><label for="c-senha2">Confirmar senha</label><input id="c-senha2" type="password" autocomplete="new-password" required></div>
+      <div class="aviso-erro" id="primeiro-erro" role="alert" hidden></div>
+      <button class="btn btn-primario" id="btn-criar-senha" type="submit">Criar senha</button>
+      <div class="login-links">
+        <button class="link" id="lnk-voltar-login" type="button">Já tenho senha. Entrar</button>
+      </div>
+    </form>
+
+    <form id="form-nova-senha" novalidate hidden>
+      <p class="sub-login">Defina a sua nova senha para continuar.</p>
+      <div class="grupo"><label for="n-senha">Nova senha</label><input id="n-senha" type="password" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" required></div>
+      <div class="grupo"><label for="n-senha2">Confirmar nova senha</label><input id="n-senha2" type="password" autocomplete="new-password" required></div>
+      <div class="aviso-erro" id="nova-senha-erro" role="alert" hidden></div>
+      <button class="btn btn-primario" id="btn-nova-senha" type="submit">Salvar nova senha</button>
+      <div class="login-links">
+        <button class="link" id="lnk-cancelar-nova-senha" type="button">Cancelar e sair</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header class="topo">
+    <img src="data:image/jpeg;base64,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" alt="Logo Mr. Brown Doces" width="60" height="60">
+    <div class="marca">
+      <h1>Mr. Brown <span>CRM</span></h1>
+      <small>Cookies recheados premiados · Alphaville, Barueri</small>
+    </div>
+    <div class="usuario-topo" id="usuario-topo" hidden>
+      <span><strong id="usuario-nome"></strong></span>
+      <button class="btn btn-sutil" id="btn-sair" type="button">Sair</button>
+    </div>
+    <nav class="abas" role="tablist" aria-label="Seções">
+      <button type="button" role="tab" data-aba="contatos" aria-selected="true">Contatos <span class="badge" id="badge-contatos">0</span></button>
+      <button type="button" role="tab" data-aba="pedidos" aria-selected="false">Pedidos <span class="badge" id="badge-pedidos">0</span></button>
+      <button type="button" role="tab" data-aba="produtos" aria-selected="false">Produtos <span class="badge" id="badge-produtos">0</span></button>
+      <button type="button" role="tab" data-aba="usuarios" aria-selected="false">Usuários <span class="badge" id="badge-usuarios">0</span></button>
+    </nav>
+  </header>
+
+  <!-- ================= CONTATOS ================= -->
+  <section id="aba-contatos" role="tabpanel">
+    <div class="funil" id="funil" aria-label="Contatos por status"></div>
+    <div class="barra">
+      <div class="segment" role="group" aria-label="Visão">
+        <button type="button" id="visao-kanban" aria-pressed="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="1" y="1" width="3.2" height="12" rx="1"/><rect x="5.4" y="1" width="3.2" height="8" rx="1"/><rect x="9.8" y="1" width="3.2" height="10" rx="1"/></svg>
+          Kanban
+        </button>
+        <button type="button" id="visao-lista" aria-pressed="false">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="1" y="2" width="12" height="2" rx="1"/><rect x="1" y="6" width="12" height="2" rx="1"/><rect x="1" y="10" width="12" height="2" rx="1"/></svg>
+          Lista
+        </button>
+      </div>
+      <label class="campo busca">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+        <input id="busca" type="search" placeholder="Buscar por nome, empresa ou objetivo" autocomplete="off">
+      </label>
+      <label class="campo" id="campo-ordem">
+        <select id="ordem" aria-label="Ordenar">
+          <option value="data-desc">Mais recentes primeiro</option>
+          <option value="data-asc">Mais antigos primeiro</option>
+          <option value="nome">Nome (A–Z)</option>
+          <option value="empresa">Empresa (A–Z)</option>
+        </select>
+      </label>
+      <div class="empurra">
+        <span class="contador" id="contador"></span>
+        <button class="btn btn-primario" id="btn-novo" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+          Novo contato
+        </button>
+      </div>
+    </div>
+
+    <div class="kanban" id="kanban"></div>
+
+    <div class="painel" id="painel-lista" hidden>
+      <div class="tabela-wrap">
+        <table>
+          <thead>
+            <tr><th>Nome</th><th>Empresa</th><th>Data</th><th>Status</th><th>Objetivo</th><th>Pedidos</th><th></th></tr>
+          </thead>
+          <tbody id="linhas"></tbody>
+        </table>
+      </div>
+      <div class="vazio" id="vazio" hidden></div>
+    </div>
+  </section>
+
+  <!-- ================= PEDIDOS ================= -->
+  <section id="aba-pedidos" role="tabpanel" hidden>
+    <div class="funil" id="funil-pedidos" aria-label="Pedidos por status"></div>
+    <div class="barra">
+      <label class="campo busca">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+        <input id="busca-pedidos" type="search" placeholder="Buscar por contato, empresa ou produto" autocomplete="off">
+      </label>
+      <div class="empurra">
+        <span class="contador" id="contador-pedidos"></span>
+        <button class="btn btn-primario" id="btn-novo-pedido" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+          Novo pedido
+        </button>
+      </div>
+    </div>
+    <div class="painel">
+      <div class="tabela-wrap">
+        <table>
+          <thead>
+            <tr><th>Pedido</th><th>Contato</th><th>Itens</th><th>Entrega</th><th>Status</th><th style="text-align:right">Total</th><th></th></tr>
+          </thead>
+          <tbody id="linhas-pedidos"></tbody>
+        </table>
+      </div>
+      <div class="vazio" id="vazio-pedidos" hidden></div>
+    </div>
+  </section>
+
+  <!-- ================= PRODUTOS ================= -->
+  <section id="aba-produtos" role="tabpanel" hidden>
+    <div class="barra">
+      <label class="campo busca">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+        <input id="busca-produtos" type="search" placeholder="Buscar produto" autocomplete="off">
+      </label>
+      <label class="check"><input type="checkbox" id="mostrar-inativos"> Mostrar inativos</label>
+      <div class="empurra">
+        <span class="contador" id="contador-produtos"></span>
+        <button class="btn btn-primario" id="btn-novo-produto" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+          Cadastrar produto
+        </button>
+      </div>
+    </div>
+    <div class="grade-prod" id="grade-prod"></div>
+    <div class="vazio" id="vazio-produtos" hidden></div>
+  </section>
+
+  <!-- ================= USUÁRIOS ================= -->
+  <section id="aba-usuarios" role="tabpanel" hidden>
+    <p class="texto-apoio">Para uma pessoa entrar no CRM, cadastre o e-mail dela aqui. Depois ela usa “Primeiro acesso” na tela de login para criar a senha.</p>
+    <div class="barra">
+      <span class="contador" id="contador-usuarios"></span>
+      <div class="empurra">
+        <button class="btn btn-primario" id="btn-novo-usuario" type="button" hidden>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+          Novo usuário
+        </button>
+      </div>
+    </div>
+    <div class="painel">
+      <div class="tabela-wrap">
+        <table>
+          <thead>
+            <tr><th>Nome</th><th>E-mail</th><th>Papel</th><th>Situação</th><th></th></tr>
+          </thead>
+          <tbody id="linhas-usuarios"></tbody>
+        </table>
+      </div>
+      <div class="vazio" id="vazio-usuarios" hidden></div>
+    </div>
+  </section>
+
+  <div class="rodape">
+    <span id="rodape-nota">Faça um backup de vez em quando.</span>
+    <span class="esp"></span>
+    <button class="btn" id="btn-csv" type="button">Exportar CSV</button>
+    <button class="btn" id="btn-backup" type="button">Salvar backup</button>
+    <button class="btn" id="btn-restaurar" type="button">Restaurar backup</button>
+    <input id="arquivo-restaurar" type="file" accept="application/json,.json" hidden>
+  </div>
+</div>
+
+<!-- ===== Modal contato ===== -->
+<dialog id="modal">
+  <form id="form" method="dialog" novalidate>
+    <h2 id="modal-titulo">Novo contato</h2>
+    <div class="grupo"><label for="f-nome">Nome</label><input id="f-nome" required placeholder="Quem é o contato" autocomplete="off"></div>
+    <div class="grupo"><label for="f-empresa">Empresa</label><input id="f-empresa" placeholder="Cafeteria, padaria, escritório, escola…" autocomplete="off"></div>
+    <div class="duas">
+      <div class="grupo"><label for="f-data">Data</label><input id="f-data" type="date" required></div>
+      <div class="grupo"><label for="f-status">Status</label><select id="f-status"></select></div>
+    </div>
+    <div class="grupo">
+      <label for="f-objetivo">Objetivo</label>
+      <input id="f-objetivo" list="objetivos" placeholder="O que esse contato quer com a Mr. Brown" autocomplete="off">
+      <datalist id="objetivos">
+        <option value="Revenda em cafeteria / padaria"></option>
+        <option value="Encomenda para evento ou festa"></option>
+        <option value="Brindes corporativos"></option>
+        <option value="Kit presente para data comemorativa"></option>
+        <option value="Fornecimento recorrente"></option>
+        <option value="Parceria / collab"></option>
+        <option value="Ponto de venda / franquia"></option>
+      </datalist>
+    </div>
+    <div class="modal-acoes">
+      <button class="btn btn-perigo" id="btn-excluir" type="button" hidden>Excluir</button>
+      <button class="btn" id="btn-pedido-do-contato" type="button" hidden>Criar pedido</button>
+      <span class="esp"></span>
+      <button class="btn" id="btn-cancelar" type="button">Cancelar</button>
+      <button class="btn btn-primario" id="btn-salvar-contato" type="submit">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ===== Modal produto ===== -->
+<dialog id="modal-produto">
+  <form id="form-produto" method="dialog" novalidate>
+    <h2 id="modal-produto-titulo">Cadastrar produto</h2>
+    <div class="grupo"><label for="p-nome">Nome</label><input id="p-nome" required placeholder="Ex.: Cookie Doce de Leite" autocomplete="off"></div>
+    <div class="duas">
+      <div class="grupo">
+        <label for="p-categoria">Categoria</label>
+        <select id="p-categoria">
+          <option>Cookie recheado</option>
+          <option>Cookie tradicional</option>
+          <option>Mini cookies</option>
+          <option>Caixa / kit</option>
+          <option>Brownie</option>
+          <option>Bolo</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="grupo"><label for="p-preco">Preço unitário (R$)</label><input id="p-preco" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Deixe vazio se ainda não definiu"></div>
+    </div>
+    <div class="grupo"><label for="p-selo">Selo (opcional)</label><input id="p-selo" list="selos" placeholder="Carro-chefe, Mais pedido, Especial…" autocomplete="off">
+      <datalist id="selos"><option value="Carro-chefe"></option><option value="Mais pedido"></option><option value="Especial"></option><option value="Para compartilhar"></option><option value="Novidade"></option><option value="Edição limitada"></option></datalist>
+    </div>
+    <div class="grupo"><label for="p-descricao">Descrição</label><textarea id="p-descricao" placeholder="Como você descreve esse produto para o cliente"></textarea></div>
+    <label class="check"><input type="checkbox" id="p-ativo" checked> Produto ativo (aparece na criação de pedidos)</label>
+    <div class="modal-acoes">
+      <button class="btn btn-perigo" id="btn-excluir-produto" type="button" hidden>Excluir</button>
+      <span class="esp"></span>
+      <button class="btn" id="btn-cancelar-produto" type="button">Cancelar</button>
+      <button class="btn btn-primario" id="btn-salvar-produto" type="submit">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ===== Modal pedido ===== -->
+<dialog id="modal-pedido" class="larga">
+  <form id="form-pedido" method="dialog" novalidate>
+    <h2 id="modal-pedido-titulo">Novo pedido</h2>
+    <div class="duas">
+      <div class="grupo"><label for="o-contato">Contato</label><select id="o-contato" required></select></div>
+      <div class="grupo"><label for="o-status">Status do pedido</label><select id="o-status"></select></div>
+    </div>
+    <div class="duas">
+      <div class="grupo"><label for="o-data">Data do pedido</label><input id="o-data" type="date" required></div>
+      <div class="grupo"><label for="o-entrega">Data de entrega / retirada</label><input id="o-entrega" type="date"></div>
+    </div>
+    <div class="grupo">
+      <label>Itens do pedido</label>
+      <div class="itens-cab"><span>Produto</span><span>Qtd</span><span>Preço unit.</span><span style="text-align:right">Subtotal</span><span></span></div>
+      <div class="itens" id="itens"></div>
+      <div><button class="btn btn-sutil" id="btn-add-item" type="button">+ Adicionar produto</button></div>
+    </div>
+    <div class="total-linha"><span class="muted">Total do pedido</span><span class="total" id="o-total">R$ 0,00</span></div>
+    <div class="grupo"><label for="o-obs">Observações</label><textarea id="o-obs" placeholder="Sabores, embalagem, mensagem no cartão, endereço de entrega…"></textarea></div>
+    <div class="modal-acoes">
+      <button class="btn btn-perigo" id="btn-excluir-pedido" type="button" hidden>Excluir</button>
+      <span class="esp"></span>
+      <button class="btn" id="btn-cancelar-pedido" type="button">Cancelar</button>
+      <button class="btn btn-primario" id="btn-salvar-pedido" type="submit">Salvar pedido</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ===== Modal usuário ===== -->
+<dialog id="modal-usuario">
+  <form id="form-usuario" method="dialog" novalidate>
+    <h2 id="modal-usuario-titulo">Novo usuário</h2>
+    <div class="grupo"><label for="u-nome">Nome</label><input id="u-nome" required placeholder="Nome da pessoa" autocomplete="off"></div>
+    <div class="grupo"><label for="u-email">E-mail</label><input id="u-email" type="email" inputmode="email" placeholder="E-mail que a pessoa usará para entrar" autocomplete="off"></div>
+    <div class="grupo">
+      <label for="u-papel">Papel</label>
+      <select id="u-papel">
+        <option value="vendedor">Vendedor</option>
+        <option value="admin">Administrador</option>
+      </select>
+    </div>
+    <label class="check"><input type="checkbox" id="u-ativo" checked> Ativo (pode entrar no CRM)</label>
+    <div class="modal-acoes">
+      <button class="btn btn-perigo" id="btn-excluir-usuario" type="button" hidden>Excluir</button>
+      <span class="esp"></span>
+      <button class="btn" id="btn-cancelar-usuario" type="button">Cancelar</button>
+      <button class="btn btn-primario" id="btn-salvar-usuario" type="submit">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ===== Confirmação ===== -->
+<dialog id="modal-confirma">
+  <form method="dialog">
+    <h2 id="confirma-titulo">Excluir?</h2>
+    <p id="confirma-texto"></p>
+    <div class="modal-acoes">
+      <span class="esp"></span>
+      <button class="btn" value="nao" type="submit">Manter</button>
+      <button class="btn btn-perigo" value="sim" type="submit">Excluir</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="js/storage.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Funil de contatos ----------
+  const STATUS = [
+    { id: "novo",       nome: "Novo contato",     cor: "#34a9dd", tint: "var(--azul-tint)" },
+    { id: "conversa",   nome: "Em conversa",      cor: "#1f87b8", tint: "var(--azul-tint)" },
+    { id: "degustacao", nome: "Degustação",       cor: "#c9a24b", tint: "var(--ouro-tint)" },
+    { id: "proposta",   nome: "Proposta enviada", cor: "#a87f2a", tint: "var(--ouro-tint)" },
+    { id: "fechado",    nome: "Fechado",          cor: "#3f8a4b", tint: "var(--verde-tint)" },
+    { id: "perdido",    nome: "Perdido",          cor: "#7c6a5d", tint: "var(--surface-2)" },
+  ];
+  const statusPorId = Object.fromEntries(STATUS.map(s => [s.id, s]));
+  const ATIVOS = new Set(["novo", "conversa", "degustacao", "proposta"]);
+  const DIAS_ALERTA = 7;
+
+  // ---------- Status de pedido (fluxo de produção da confeitaria) ----------
+  const STATUS_PEDIDO = [
+    { id: "orcamento",  nome: "Orçamento",   cor: "#34a9dd", tint: "var(--azul-tint)" },
+    { id: "confirmado", nome: "Confirmado",  cor: "#1f87b8", tint: "var(--azul-tint)" },
+    { id: "producao",   nome: "Em produção", cor: "#c9a24b", tint: "var(--ouro-tint)" },
+    { id: "pronto",     nome: "Pronto",      cor: "#a87f2a", tint: "var(--ouro-tint)" },
+    { id: "entregue",   nome: "Entregue",    cor: "#3f8a4b", tint: "var(--verde-tint)" },
+    { id: "cancelado",  nome: "Cancelado",   cor: "#7c6a5d", tint: "var(--surface-2)" },
+  ];
+  const statusPedidoPorId = Object.fromEntries(STATUS_PEDIDO.map(s => [s.id, s]));
+
+  // ---------- Papéis de usuário ----------
+  const PAPEIS = {
+    admin:    { nome: "Administrador", cor: "#1f87b8", tint: "var(--azul-tint)" },
+    vendedor: { nome: "Vendedor",      cor: "#7c6a5d", tint: "var(--surface-2)" },
+  };
+  const USUARIO_LOCAL = { id: "local", nome: "Uso local", email: "", papel: "admin", ativo: true };
+
+  // ---------- Produtos do site mrbrowncookies.com.br (sem preço publicado) ----------
+  function produtosDoSite() {
+    return [
+      { id: "site-tradicional", nome: "Tradicional",          categoria: "Cookie tradicional", selo: "Carro-chefe",       preco: null, descricao: "Massa amanteigada no ponto certo com gotas de chocolate. O queridinho da casa.", ativo: true, do_site: true },
+      { id: "site-nutella",     nome: "Nutella",              categoria: "Cookie recheado",    selo: "Mais pedido",       preco: null, descricao: "Cookie recheado com Nutella cremosa no centro. Servido morno, é puro conforto.", ativo: true, do_site: true },
+      { id: "site-ovomaltine",  nome: "Ovomaltine",           categoria: "Cookie recheado",    selo: "",                  preco: null, descricao: "Recheio cremoso de Ovomaltine com aqueles flocos crocantes. Pura nostalgia.", ativo: true, do_site: true },
+      { id: "site-chocolatudo", nome: "Chocolatudo",          categoria: "Cookie recheado",    selo: "",                  preco: null, descricao: "Para os chocólatras: massa de chocolate com recheio de chocolate que escorre.", ativo: true, do_site: true },
+      { id: "site-limao",       nome: "Limão Siciliano",      categoria: "Cookie recheado",    selo: "",                  preco: null, descricao: "Recheio cremoso de limão siciliano. Doçura na medida com um toque cítrico refrescante.", ativo: true, do_site: true },
+      { id: "site-pistache",    nome: "Pistache",             categoria: "Cookie recheado",    selo: "Especial",          preco: null, descricao: "Recheio cremoso de pistache de verdade. Sofisticado e viciante.", ativo: true, do_site: true },
+      { id: "site-mini",        nome: "Mini Cookie Recheado", categoria: "Mini cookies",       selo: "Para compartilhar", preco: null, descricao: "Caixinha de mini cookies recheados para mergulhar na cobertura de chocolate. Perfeitos para compartilhar (ou não!).", ativo: true, do_site: true },
+    ];
+  }
+
+  // ---------- Utilidades ----------
+  function uid() {
+    if (window.crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); });
+  }
+  function isoData(dt) { const p = n => String(n).padStart(2, "0"); return dt.getFullYear() + "-" + p(dt.getMonth() + 1) + "-" + p(dt.getDate()); }
+  function hojeIso() { return isoData(new Date()); }
+  function formataData(iso) { if (!iso) return ""; const [a, m, d] = String(iso).slice(0, 10).split("-"); return d + "/" + m + "/" + a; }
+  function diasDesde(iso) {
+    if (!iso) return null;
+    const [a, m, d] = String(iso).slice(0, 10).split("-").map(Number);
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    return Math.round((hoje - new Date(a, m - 1, d)) / 86400000);
+  }
+  function textoDias(n) {
+    if (n === null) return "";
+    if (n === 0) return "hoje";
+    if (n === 1) return "ontem";
+    if (n === -1) return "amanhã";
+    if (n < 0) return "em " + Math.abs(n) + " dias";
+    return "há " + n + " dias";
+  }
+  const fmtBRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+  function moeda(v) { return fmtBRL.format(Number(v) || 0); }
+  function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+  function normaliza(s) { return String(s ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+  function totalPedido(p) { return (p.itens || []).reduce((t, i) => t + (Number(i.qtd) || 0) * (Number(i.preco) || 0), 0); }
+  function mensagemErro(err) { return err && err.message ? err.message : "Algo deu errado. Tente de novo."; }
+  function emailValido(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+  // ---------- Estado ----------
+  const S = window.MrBrownStorage;
+  let dados = { contatos: [], produtos: [], pedidos: [], usuarios: [] };
+  let usuario = null;
+  let appPronto = false;
+  let entrando = false;
+  let filtroStatus = "";
+  let filtroStatusPedido = "";
+  let visao = "kanban";
+  try { visao = localStorage.getItem("mrbrown-crm-visao") || "kanban"; } catch (e) { /* ignora */ }
+  let editandoId = null, editandoProdutoId = null, editandoPedidoId = null, editandoUsuarioId = null;
+  let confirmaAcao = null;
+
+  // ---------- Elementos ----------
+  const $ = id => document.getElementById(id);
+  const telaLogin = $("tela-login"), app = $("app");
+  const formLogin = $("form-login"), formPrimeiro = $("form-primeiro");
+  const lEmail = $("l-email"), lSenha = $("l-senha"), loginErro = $("login-erro"), loginOk = $("login-ok");
+  const cEmail = $("c-email"), cSenha = $("c-senha"), cSenha2 = $("c-senha2"), primeiroErro = $("primeiro-erro");
+  const formNovaSenha = $("form-nova-senha"), nSenha = $("n-senha"), nSenha2 = $("n-senha2"), novaSenhaErro = $("nova-senha-erro");
+  let usuarioRecuperando = null;
+  const elFunil = $("funil"), elKanban = $("kanban"), elPainelLista = $("painel-lista"), elLinhas = $("linhas"), elVazio = $("vazio"), elContador = $("contador");
+  const elBusca = $("busca"), elOrdem = $("ordem"), elCampoOrdem = $("campo-ordem");
+  const modal = $("modal"), form = $("form"), modalTitulo = $("modal-titulo");
+  const fNome = $("f-nome"), fEmpresa = $("f-empresa"), fData = $("f-data"), fStatus = $("f-status"), fObjetivo = $("f-objetivo");
+  const btnExcluir = $("btn-excluir"), btnPedidoDoContato = $("btn-pedido-do-contato"), btnSalvarContato = $("btn-salvar-contato");
+  const modalProduto = $("modal-produto"), formProduto = $("form-produto"), btnSalvarProduto = $("btn-salvar-produto"), btnExcluirProduto = $("btn-excluir-produto");
+  const pNome = $("p-nome"), pCategoria = $("p-categoria"), pPreco = $("p-preco"), pSelo = $("p-selo"), pDescricao = $("p-descricao"), pAtivo = $("p-ativo");
+  const modalPedido = $("modal-pedido"), formPedido = $("form-pedido"), btnSalvarPedido = $("btn-salvar-pedido"), btnExcluirPedido = $("btn-excluir-pedido");
+  const oContato = $("o-contato"), oStatus = $("o-status"), oData = $("o-data"), oEntrega = $("o-entrega"), oObs = $("o-obs"), elItens = $("itens"), oTotal = $("o-total");
+  const modalUsuario = $("modal-usuario"), formUsuario = $("form-usuario"), btnSalvarUsuario = $("btn-salvar-usuario"), btnExcluirUsuario = $("btn-excluir-usuario");
+  const uNome = $("u-nome"), uEmail = $("u-email"), uPapel = $("u-papel"), uAtivo = $("u-ativo");
+  const modalConfirma = $("modal-confirma"), confirmaTexto = $("confirma-texto"), confirmaTitulo = $("confirma-titulo");
+
+  for (const s of STATUS) fStatus.insertAdjacentHTML("beforeend", `<option value="${s.id}">${esc(s.nome)}</option>`);
+  for (const s of STATUS_PEDIDO) oStatus.insertAdjacentHTML("beforeend", `<option value="${s.id}">${esc(s.nome)}</option>`);
+
+  // O logo do topo é reaproveitado na tela de login (mesma imagem base64)
+  const logoTopo = document.querySelector(".topo img");
+  if (logoTopo) $("login-logo").src = logoTopo.src;
+
+  // ---------- Ajudantes da camada de dados ----------
+  function normalizar(d) {
+    const arr = x => (Array.isArray(x) ? x : []);
+    return { contatos: arr(d && d.contatos), produtos: arr(d && d.produtos), pedidos: arr(d && d.pedidos), usuarios: arr(d && d.usuarios) };
+  }
+  function ehAdmin() { return !!usuario && usuario.papel === "admin"; }
+  // Atualiza `lista` com o item salvo (mesclando a resposta do storage, se houver) e devolve o objeto final
+  function aplicar(lista, item, resposta) {
+    const final = resposta && typeof resposta === "object" ? { ...item, ...resposta } : item;
+    const i = lista.findIndex(x => x.id === final.id);
+    if (i >= 0) lista[i] = final; else lista.push(final);
+    return final;
+  }
+  async function recarregar() { dados = normalizar(await S.carregarTudo()); render(); }
+
+  // Executa uma ação assíncrona deixando o botão em "salvando…"; erro vira toast (ou vai para aoFalhar)
+  async function executar(botao, fn, rotulo, aoFalhar) {
+    const original = botao ? botao.textContent : "";
+    if (botao) { botao.disabled = true; botao.textContent = rotulo || "Salvando…"; }
+    try { await fn(); }
+    catch (err) { if (aoFalhar) aoFalhar(mensagemErro(err)); else toast(mensagemErro(err), 4000); }
+    finally { if (botao) { botao.disabled = false; botao.textContent = original; } }
+  }
+
+  // ====================== BOOT / LOGIN ======================
+  function mostrarFalhaBoot(msg) {
+    telaLogin.hidden = true; app.hidden = true;
+    const div = document.createElement("div");
+    div.className = "boot-erro";
+    div.innerHTML = "<strong>Não foi possível abrir o CRM</strong>";
+    div.appendChild(document.createTextNode(msg));
+    document.body.appendChild(div);
+  }
+  function mostrarLogin(erro) {
+    appPronto = false; usuario = null;
+    app.hidden = true; telaLogin.hidden = false;
+    formPrimeiro.hidden = true; formNovaSenha.hidden = true; formLogin.hidden = false;
+    lSenha.value = "";
+    loginErro.hidden = true;
+    if (erro) mostrarErroLogin(erro);
+    document.querySelectorAll("dialog[open]").forEach(d => d.close());
+    (lEmail.value ? lSenha : lEmail).focus();
+  }
+  // Chegou pelo link de "esqueci minha senha": pede a nova senha antes de abrir o app
+  function mostrarNovaSenha(u) {
+    usuarioRecuperando = u;
+    appPronto = false;
+    app.hidden = true; telaLogin.hidden = false;
+    formLogin.hidden = true; formPrimeiro.hidden = true; formNovaSenha.hidden = false;
+    nSenha.value = ""; nSenha2.value = ""; novaSenhaErro.hidden = true;
+    document.querySelectorAll("dialog[open]").forEach(d => d.close());
+    nSenha.focus();
+  }
+  async function entrarNoApp(u) {
+    usuario = u;
+    try { dados = normalizar(await S.carregarTudo()); }
+    catch (err) { dados = normalizar(null); toast(mensagemErro(err), 5000); }
+    await semearProdutosDoSite();
+    appPronto = true;
+    telaLogin.hidden = true; app.hidden = false;
+    renderUsuarioTopo(); render();
+  }
+  // Garante os 7 produtos do site na primeira abertura (ids fixos: upsert é idempotente)
+  async function semearProdutosDoSite() {
+    if (dados.produtos.length) return;
+    for (const p of produtosDoSite()) {
+      try { aplicar(dados.produtos, p, await S.salvarProduto(p)); }
+      catch (err) { toast(mensagemErro(err), 4000); break; }
+    }
+  }
+  function renderUsuarioTopo() {
+    const topo = $("usuario-topo");
+    if (S.modo !== "supabase" || !usuario) { topo.hidden = true; return; }
+    $("usuario-nome").textContent = usuario.nome || usuario.email || "";
+    topo.hidden = false;
+  }
+  function configurarRodape() {
+    $("rodape-nota").textContent = S.modo === "supabase"
+      ? "Dados salvos online e compartilhados com a equipe. Faça um backup de vez em quando."
+      : "Modo local: os dados ficam neste navegador. Configure o Supabase em config.js para usar online.";
+  }
+
+  async function iniciar() {
+    if (!S) { mostrarFalhaBoot("Não encontrei js/storage.js. Confira se os arquivos do projeto estão completos."); return; }
+    let r = null;
+    try { r = await S.init(); }
+    catch (err) { mostrarFalhaBoot(mensagemErro(err)); return; }
+    configurarRodape();
+
+    if (typeof S.onChange === "function") {
+      S.onChange(async () => {
+        if (!appPronto) return;
+        try { await recarregar(); } catch (err) { toast(mensagemErro(err), 4000); }
+      });
+    }
+
+    if (S.modo === "supabase") {
+      if (typeof S.onAuth === "function") {
+        S.onAuth((u, evento) => {
+          if (!u) { if (appPronto || usuarioRecuperando) { usuarioRecuperando = null; mostrarLogin(); toast("Sessão encerrada. Entre de novo."); } return; }
+          if (evento === "recuperacao" && typeof S.novaSenha === "function") { mostrarNovaSenha(u); return; }
+          if (!appPronto && !entrando && !usuarioRecuperando) entrarNoApp(u);
+        });
+      }
+      if (r && r.usuario) {
+        if (S.recuperandoSenha && typeof S.novaSenha === "function") mostrarNovaSenha(r.usuario);
+        else await entrarNoApp(r.usuario);
+      } else {
+        mostrarLogin(r && r.aviso ? r.aviso : "");
+      }
+    } else {
+      await entrarNoApp(r && r.usuario ? r.usuario : USUARIO_LOCAL);
+    }
+  }
+
+  formLogin.addEventListener("submit", e => {
+    e.preventDefault();
+    loginErro.hidden = true; loginOk.hidden = true;
+    const email = lEmail.value.trim().toLowerCase(), senha = lSenha.value;
+    if (!emailValido(email)) { mostrarErroLogin("Digite um e-mail válido."); lEmail.focus(); return; }
+    if (!senha) { mostrarErroLogin("Digite sua senha."); lSenha.focus(); return; }
+    executar($("btn-entrar"), async () => {
+      entrando = true;
+      try { const u = await S.login(email, senha); await entrarNoApp(u); }
+      finally { entrando = false; }
+    }, "Entrando…", mostrarErroLogin);
+  });
+  function mostrarErroLogin(msg) { loginErro.textContent = msg; loginErro.hidden = false; }
+  function mostrarOkLogin(msg) { loginOk.textContent = msg; loginOk.hidden = false; }
+
+  $("lnk-esqueci").addEventListener("click", () => {
+    loginErro.hidden = true; loginOk.hidden = true;
+    const email = lEmail.value.trim().toLowerCase();
+    if (!emailValido(email)) { mostrarErroLogin("Digite seu e-mail no campo acima para receber o link de redefinição."); lEmail.focus(); return; }
+    executar($("lnk-esqueci"), async () => {
+      await S.esqueciSenha(email);
+      mostrarOkLogin("Enviamos um e-mail com o link para redefinir a senha. Confira também a caixa de spam.");
+    }, "Enviando…", mostrarErroLogin);
+  });
+  $("lnk-primeiro").addEventListener("click", () => {
+    formLogin.hidden = true; formPrimeiro.hidden = false;
+    primeiroErro.hidden = true;
+    cEmail.value = lEmail.value.trim(); cSenha.value = ""; cSenha2.value = "";
+    (cEmail.value ? cSenha : cEmail).focus();
+  });
+  $("lnk-voltar-login").addEventListener("click", () => {
+    formPrimeiro.hidden = true; formLogin.hidden = false; loginErro.hidden = true;
+    if (!lEmail.value) lEmail.value = cEmail.value.trim();
+    lSenha.focus();
+  });
+  formPrimeiro.addEventListener("submit", e => {
+    e.preventDefault();
+    primeiroErro.hidden = true;
+    const email = cEmail.value.trim().toLowerCase(), senha = cSenha.value, senha2 = cSenha2.value;
+    const falha = msg => { primeiroErro.textContent = msg; primeiroErro.hidden = false; };
+    if (!emailValido(email)) { falha("Digite um e-mail válido."); cEmail.focus(); return; }
+    if (senha.length < 6) { falha("A senha precisa ter pelo menos 6 caracteres."); cSenha.focus(); return; }
+    if (senha !== senha2) { falha("As senhas não conferem."); cSenha2.focus(); return; }
+    executar($("btn-criar-senha"), async () => {
+      entrando = true;
+      try {
+        const u = await S.primeiroAcesso(email, senha);
+        if (u && u.id) {
+          // Confirmação de e-mail desligada no servidor: a sessão já está ativa
+          await entrarNoApp(u);
+          toast("Senha criada. Bem-vindo ao Mr. Brown CRM!", 4000);
+          return;
+        }
+        formPrimeiro.hidden = true; formLogin.hidden = false;
+        lEmail.value = email; lSenha.value = ""; loginErro.hidden = true;
+        mostrarOkLogin("Senha criada. Confirme pelo link enviado ao seu e-mail e depois entre.");
+        lSenha.focus();
+      } finally { entrando = false; }
+    }, "Criando…", falha);
+  });
+  formNovaSenha.addEventListener("submit", e => {
+    e.preventDefault();
+    novaSenhaErro.hidden = true;
+    const senha = nSenha.value, senha2 = nSenha2.value;
+    const falha = msg => { novaSenhaErro.textContent = msg; novaSenhaErro.hidden = false; };
+    if (senha.length < 6) { falha("A senha precisa ter pelo menos 6 caracteres."); nSenha.focus(); return; }
+    if (senha !== senha2) { falha("As senhas não conferem."); nSenha2.focus(); return; }
+    executar($("btn-nova-senha"), async () => {
+      await S.novaSenha(senha);
+      const u = usuarioRecuperando; usuarioRecuperando = null;
+      await entrarNoApp(u);
+      toast("Senha alterada.", 3000);
+    }, "Salvando…", falha);
+  });
+  $("lnk-cancelar-nova-senha").addEventListener("click", () => {
+    executar($("lnk-cancelar-nova-senha"), async () => { usuarioRecuperando = null; await S.logout(); mostrarLogin(); }, "Saindo…");
+  });
+  $("btn-sair").addEventListener("click", () => {
+    executar($("btn-sair"), async () => { await S.logout(); mostrarLogin(); }, "Saindo…");
+  });
+
+  // ---------- Abas ----------
+  const ABAS = ["contatos", "pedidos", "produtos", "usuarios"];
+  document.querySelectorAll(".abas [data-aba]").forEach(b => b.addEventListener("click", () => mostrarAba(b.dataset.aba)));
+  function mostrarAba(nome) {
+    document.querySelectorAll(".abas [data-aba]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.aba === nome)));
+    for (const a of ABAS) $("aba-" + a).hidden = a !== nome;
+  }
+
+  // ---------- Render geral ----------
+  function render() {
+    renderContatos();
+    renderPedidos();
+    renderProdutos();
+    renderUsuarios();
+    $("badge-contatos").textContent = dados.contatos.length;
+    $("badge-pedidos").textContent = dados.pedidos.length;
+    $("badge-produtos").textContent = dados.produtos.filter(p => p.ativo !== false).length;
+    $("badge-usuarios").textContent = dados.usuarios.length;
+  }
+
+  // ====================== CONTATOS ======================
+  function pedidosDoContato(id) { return dados.pedidos.filter(p => p.contato_id === id); }
+
+  function renderContatos() {
+    const contagem = Object.fromEntries(STATUS.map(s => [s.id, 0]));
+    for (const c of dados.contatos) if (contagem[c.status] !== undefined) contagem[c.status]++;
+    elFunil.innerHTML = STATUS.map(s => `
+      <button type="button" data-status="${s.id}" aria-pressed="${filtroStatus === s.id}" style="--cor:${s.cor};--tint:${s.tint}">
+        <span class="n">${contagem[s.id]}</span><span class="l">${esc(s.nome)}</span>
+      </button>`).join("");
+
+    $("visao-kanban").setAttribute("aria-pressed", String(visao === "kanban"));
+    $("visao-lista").setAttribute("aria-pressed", String(visao === "lista"));
+    elKanban.hidden = visao !== "kanban";
+    elPainelLista.hidden = visao !== "lista";
+    elCampoOrdem.hidden = visao !== "lista";
+
+    const lista = contatosFiltrados();
+    elContador.textContent = lista.length === dados.contatos.length
+      ? `${dados.contatos.length} ${dados.contatos.length === 1 ? "contato" : "contatos"}`
+      : `${lista.length} de ${dados.contatos.length}`;
+
+    if (visao === "kanban") renderKanban(lista); else renderLista(lista);
+  }
+
+  function contatosFiltrados() {
+    const q = normaliza(elBusca.value.trim());
+    const lista = dados.contatos.filter(c => {
+      if (filtroStatus && c.status !== filtroStatus) return false;
+      if (!q) return true;
+      return normaliza(c.nome + " " + c.empresa + " " + c.objetivo).includes(q);
+    });
+    const ordem = visao === "kanban" ? "data-desc" : elOrdem.value;
+    const cmp = (a, b) => String(a ?? "").localeCompare(String(b ?? ""), "pt-BR", { sensitivity: "base" });
+    if (ordem === "data-desc") lista.sort((a, b) => (b.data || "").localeCompare(a.data || ""));
+    else if (ordem === "data-asc") lista.sort((a, b) => (a.data || "").localeCompare(b.data || ""));
+    else if (ordem === "nome") lista.sort((a, b) => cmp(a.nome, b.nome));
+    else if (ordem === "empresa") lista.sort((a, b) => cmp(a.empresa, b.empresa));
+    return lista;
+  }
+
+  function cartaoHtml(c) {
+    const dias = diasDesde(c.data);
+    const atrasado = ATIVOS.has(c.status) && dias !== null && dias >= DIAS_ALERTA;
+    const np = pedidosDoContato(c.id).length;
+    return `
+      <div class="cartao" draggable="true" data-id="${esc(c.id)}" role="button" tabindex="0" aria-label="${esc(c.nome)}, ${esc(statusPorId[c.status]?.nome || "")}">
+        <span class="c-nome">${esc(c.nome)}</span>
+        ${c.empresa ? `<span class="c-emp">${esc(c.empresa)}</span>` : ""}
+        ${c.objetivo ? `<span class="c-obj">${esc(c.objetivo)}</span>` : ""}
+        <span class="c-pe">
+          <span class="${atrasado ? "alerta" : ""}">${formataData(c.data)} · ${textoDias(dias)}${atrasado ? " · retomar" : ""}</span>
+          ${np ? `<span class="pedidos">${np} ${np === 1 ? "pedido" : "pedidos"}</span>` : ""}
+        </span>
+      </div>`;
+  }
+
+  function renderKanban(lista) {
+    const cols = STATUS.map(s => {
+      const cartoes = lista.filter(c => c.status === s.id);
+      return `
+        <div class="coluna" data-status="${s.id}" style="--cor:${s.cor};--tint:${s.tint}">
+          <div class="coluna-cab">${esc(s.nome)}<span class="qtd">${cartoes.length}</span></div>
+          <div class="cartoes">${cartoes.length ? cartoes.map(cartaoHtml).join("") : '<div class="vazio-col">Arraste um contato para cá</div>'}</div>
+        </div>`;
+    });
+    elKanban.innerHTML = cols.join("");
+  }
+
+  function renderLista(lista) {
+    elVazio.hidden = lista.length > 0;
+    elVazio.innerHTML = dados.contatos.length === 0
+      ? "<strong>Nenhum contato por aqui</strong>Clique em “Novo contato” para começar a acompanhar suas oportunidades."
+      : "<strong>Nada encontrado</strong>Tente outra busca ou limpe o filtro de status.";
+    elLinhas.innerHTML = lista.map(c => {
+      const s = statusPorId[c.status] || STATUS[0];
+      const dias = diasDesde(c.data);
+      const atrasado = ATIVOS.has(c.status) && dias !== null && dias >= DIAS_ALERTA;
+      const np = pedidosDoContato(c.id).length;
+      const opcoes = STATUS.map(o => `<option value="${o.id}" ${o.id === c.status ? "selected" : ""}>${esc(o.nome)}</option>`).join("");
+      return `
+        <tr data-id="${esc(c.id)}">
+          <td class="nome">${esc(c.nome)}</td>
+          <td class="rotulo" data-rotulo="Empresa">${esc(c.empresa) || "<span class='muted'>—</span>"}</td>
+          <td class="data${atrasado ? " atrasado" : ""}">${formataData(c.data)}<small>${textoDias(dias)}${atrasado ? " · retomar" : ""}</small></td>
+          <td><span class="pill" style="--cor:${s.cor};--tint:${s.tint}"><select aria-label="Status de ${esc(c.nome)}" data-acao="status">${opcoes}</select></span></td>
+          <td class="objetivo rotulo" data-rotulo="Objetivo">${esc(c.objetivo) || "<span class='muted'>—</span>"}</td>
+          <td class="rotulo" data-rotulo="Pedidos">${np ? `<button class="btn btn-sutil" type="button" data-acao="ver-pedidos">${np} ${np === 1 ? "pedido" : "pedidos"}</button>` : "<span class='muted'>—</span>"}</td>
+          <td class="acoes">
+            <button class="btn btn-sutil" type="button" data-acao="novo-pedido">+ Pedido</button>
+            <button class="btn btn-sutil" type="button" data-acao="editar">Editar</button>
+          </td>
+        </tr>`;
+    }).join("");
+  }
+
+  // Mudança de status (Kanban, setas, select da lista): atualiza na hora e desfaz se o salvamento falhar
+  async function mudarStatusContato(id, status) {
+    const c = dados.contatos.find(x => x.id === id);
+    if (!c || c.status === status) return;
+    const anterior = { status: c.status, data: c.data };
+    c.status = status; c.data = hojeIso();
+    render();
+    try {
+      aplicar(dados.contatos, c, await S.salvarContato(c));
+      toast(`${c.nome} → ${statusPorId[status].nome}`);
+    } catch (err) {
+      Object.assign(c, anterior); render();
+      toast(mensagemErro(err), 4000);
+    }
+  }
+
+  // Funil / visão / busca
+  elFunil.addEventListener("click", e => {
+    const b = e.target.closest("button[data-status]");
+    if (!b) return;
+    filtroStatus = filtroStatus === b.dataset.status ? "" : b.dataset.status;
+    renderContatos();
+  });
+  $("visao-kanban").addEventListener("click", () => { visao = "kanban"; try { localStorage.setItem("mrbrown-crm-visao", visao); } catch (e) {} renderContatos(); });
+  $("visao-lista").addEventListener("click", () => { visao = "lista"; try { localStorage.setItem("mrbrown-crm-visao", visao); } catch (e) {} renderContatos(); });
+  elBusca.addEventListener("input", renderContatos);
+  elOrdem.addEventListener("change", renderContatos);
+
+  // Lista: ações
+  elLinhas.addEventListener("click", e => {
+    const b = e.target.closest("button[data-acao]");
+    if (!b) return;
+    const id = b.closest("tr").dataset.id;
+    if (b.dataset.acao === "editar") abrirEdicao(id);
+    else if (b.dataset.acao === "novo-pedido") abrirNovoPedido(id);
+    else if (b.dataset.acao === "ver-pedidos") { const c = dados.contatos.find(x => x.id === id); $("busca-pedidos").value = c ? c.nome : ""; filtroStatusPedido = ""; mostrarAba("pedidos"); renderPedidos(); }
+  });
+  elLinhas.addEventListener("change", e => {
+    const sel = e.target.closest("select[data-acao='status']");
+    if (sel) mudarStatusContato(sel.closest("tr").dataset.id, sel.value);
+  });
+
+  // Kanban: clique e arrastar
+  let arrastandoId = null;
+  elKanban.addEventListener("click", e => {
+    const c = e.target.closest(".cartao");
+    if (c) abrirEdicao(c.dataset.id);
+  });
+  elKanban.addEventListener("keydown", e => {
+    const c = e.target.closest(".cartao");
+    if (!c) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); abrirEdicao(c.dataset.id); return; }
+    // Setas esquerda/direita movem o cartão de coluna (acessibilidade)
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      const contato = dados.contatos.find(x => x.id === c.dataset.id);
+      if (!contato) return;
+      const i = STATUS.findIndex(s => s.id === contato.status);
+      const j = e.key === "ArrowRight" ? Math.min(i + 1, STATUS.length - 1) : Math.max(i - 1, 0);
+      if (i !== j) { e.preventDefault(); mudarStatusContato(contato.id, STATUS[j].id); elKanban.querySelector(`.cartao[data-id="${CSS.escape(contato.id)}"]`)?.focus(); }
+    }
+  });
+  elKanban.addEventListener("dragstart", e => {
+    const c = e.target.closest(".cartao");
+    if (!c) return;
+    arrastandoId = c.dataset.id;
+    c.classList.add("arrastando");
+    e.dataTransfer.effectAllowed = "move";
+    try { e.dataTransfer.setData("text/plain", arrastandoId); } catch (err) {}
+  });
+  elKanban.addEventListener("dragend", () => {
+    arrastandoId = null;
+    elKanban.querySelectorAll(".arrastando").forEach(x => x.classList.remove("arrastando"));
+    elKanban.querySelectorAll(".coluna.sobre").forEach(x => x.classList.remove("sobre"));
+  });
+  elKanban.addEventListener("dragover", e => {
+    const col = e.target.closest(".coluna");
+    if (!col || !arrastandoId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    elKanban.querySelectorAll(".coluna.sobre").forEach(x => { if (x !== col) x.classList.remove("sobre"); });
+    col.classList.add("sobre");
+  });
+  elKanban.addEventListener("dragleave", e => {
+    const col = e.target.closest(".coluna");
+    if (col && !col.contains(e.relatedTarget)) col.classList.remove("sobre");
+  });
+  elKanban.addEventListener("drop", e => {
+    const col = e.target.closest(".coluna");
+    if (!col || !arrastandoId) return;
+    e.preventDefault();
+    mudarStatusContato(arrastandoId, col.dataset.status);
+    arrastandoId = null;
+  });
+
+  // Modal contato
+  $("btn-novo").addEventListener("click", () => abrirNovo());
+  function abrirNovo() {
+    editandoId = null;
+    modalTitulo.textContent = "Novo contato";
+    form.reset(); fData.value = hojeIso(); fStatus.value = "novo";
+    btnExcluir.hidden = true; btnPedidoDoContato.hidden = true;
+    modal.showModal(); fNome.focus();
+  }
+  function abrirEdicao(id) {
+    const c = dados.contatos.find(x => x.id === id);
+    if (!c) return;
+    editandoId = id;
+    modalTitulo.textContent = "Editar contato";
+    fNome.value = c.nome; fEmpresa.value = c.empresa || ""; fData.value = c.data || hojeIso(); fStatus.value = c.status; fObjetivo.value = c.objetivo || "";
+    btnExcluir.hidden = false; btnPedidoDoContato.hidden = false;
+    modal.showModal(); fNome.focus();
+  }
+  $("btn-cancelar").addEventListener("click", () => modal.close());
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const nome = fNome.value.trim();
+    if (!nome) { fNome.focus(); fNome.reportValidity(); return; }
+    if (!fData.value) { fData.focus(); fData.reportValidity(); return; }
+    const d = { nome, empresa: fEmpresa.value.trim(), data: fData.value, status: fStatus.value, objetivo: fObjetivo.value.trim() };
+    const atual = editandoId ? dados.contatos.find(x => x.id === editandoId) : null;
+    const c = atual ? { ...atual, ...d } : { id: uid(), ...d };
+    executar(btnSalvarContato, async () => {
+      aplicar(dados.contatos, c, await S.salvarContato(c));
+      toast(atual ? "Contato atualizado" : "Contato adicionado");
+      editandoId = null; render(); modal.close();
+    });
+  });
+  btnPedidoDoContato.addEventListener("click", () => { const id = editandoId; modal.close(); abrirNovoPedido(id); });
+  btnExcluir.addEventListener("click", () => {
+    const c = dados.contatos.find(x => x.id === editandoId);
+    if (!c) return;
+    const np = pedidosDoContato(c.id).length;
+    confirmar("Excluir contato?", `${c.nome}${c.empresa ? " · " + c.empresa : ""} será removido.${np ? ` Os ${np} pedidos desse contato também serão excluídos.` : ""}`, () => {
+      executar(btnExcluir, async () => {
+        await S.excluirContato(c.id);
+        dados.contatos = dados.contatos.filter(x => x.id !== c.id);
+        dados.pedidos = dados.pedidos.filter(p => p.contato_id !== c.id);
+        editandoId = null; render(); modal.close(); toast("Contato excluído");
+      }, "Excluindo…");
+    });
+  });
+
+  // ====================== PRODUTOS ======================
+  function renderProdutos() {
+    const q = normaliza($("busca-produtos").value.trim());
+    const mostrarInativos = $("mostrar-inativos").checked;
+    const lista = dados.produtos.filter(p => (mostrarInativos || p.ativo !== false) && (!q || normaliza(p.nome + " " + p.categoria + " " + p.descricao + " " + p.selo).includes(q)));
+    $("contador-produtos").textContent = `${lista.length} ${lista.length === 1 ? "produto" : "produtos"}`;
+    $("vazio-produtos").hidden = lista.length > 0;
+    $("vazio-produtos").innerHTML = "<strong>Nenhum produto</strong>Cadastre os cookies, kits e caixas que a Mr. Brown vende.";
+    $("grade-prod").innerHTML = lista.map(p => `
+      <div class="prod${p.ativo === false ? " inativo" : ""}" data-id="${esc(p.id)}">
+        <div class="p-cab"><h3>${esc(p.nome)}${p.do_site ? '<span class="tag-site">site</span>' : ""}</h3>${p.selo ? `<span class="p-selo">${esc(p.selo)}</span>` : ""}</div>
+        <span class="cat">${esc(p.categoria || "")}${p.ativo === false ? " · inativo" : ""}</span>
+        <p>${esc(p.descricao || "")}</p>
+        <div class="p-pe">
+          ${p.preco === null || p.preco === undefined || p.preco === "" ? '<span class="preco indef">Preço a definir</span>' : `<span class="preco">${moeda(p.preco)}</span>`}
+          <button class="btn btn-sutil" type="button" data-acao="editar-produto">Editar</button>
+        </div>
+      </div>`).join("");
+  }
+  $("busca-produtos").addEventListener("input", renderProdutos);
+  $("mostrar-inativos").addEventListener("change", renderProdutos);
+  $("grade-prod").addEventListener("click", e => {
+    const b = e.target.closest("button[data-acao='editar-produto']");
+    if (b) abrirEdicaoProduto(b.closest(".prod").dataset.id);
+  });
+  $("btn-novo-produto").addEventListener("click", () => {
+    editandoProdutoId = null;
+    $("modal-produto-titulo").textContent = "Cadastrar produto";
+    formProduto.reset(); pAtivo.checked = true;
+    btnExcluirProduto.hidden = true;
+    modalProduto.showModal(); pNome.focus();
+  });
+  function abrirEdicaoProduto(id) {
+    const p = dados.produtos.find(x => x.id === id);
+    if (!p) return;
+    editandoProdutoId = id;
+    $("modal-produto-titulo").textContent = "Editar produto";
+    pNome.value = p.nome; pCategoria.value = p.categoria || "Outro"; if (pCategoria.value !== (p.categoria || "Outro")) pCategoria.value = "Outro";
+    pPreco.value = p.preco === null || p.preco === undefined ? "" : p.preco;
+    pSelo.value = p.selo || ""; pDescricao.value = p.descricao || ""; pAtivo.checked = p.ativo !== false;
+    btnExcluirProduto.hidden = false;
+    modalProduto.showModal(); pNome.focus();
+  }
+  $("btn-cancelar-produto").addEventListener("click", () => modalProduto.close());
+  formProduto.addEventListener("submit", e => {
+    e.preventDefault();
+    const nome = pNome.value.trim();
+    if (!nome) { pNome.focus(); pNome.reportValidity(); return; }
+    const preco = pPreco.value.trim() === "" ? null : Math.max(0, Number(pPreco.value));
+    const d = { nome, categoria: pCategoria.value, preco, selo: pSelo.value.trim(), descricao: pDescricao.value.trim(), ativo: pAtivo.checked };
+    const atual = editandoProdutoId ? dados.produtos.find(x => x.id === editandoProdutoId) : null;
+    const p = atual ? { ...atual, ...d } : { id: uid(), do_site: false, ...d };
+    executar(btnSalvarProduto, async () => {
+      aplicar(dados.produtos, p, await S.salvarProduto(p));
+      toast(atual ? "Produto atualizado" : "Produto cadastrado");
+      editandoProdutoId = null; render(); modalProduto.close();
+    });
+  });
+  btnExcluirProduto.addEventListener("click", () => {
+    const p = dados.produtos.find(x => x.id === editandoProdutoId);
+    if (!p) return;
+    const usos = dados.pedidos.filter(o => (o.itens || []).some(i => i.produto_id === p.id)).length;
+    if (usos) {
+      confirmar("Produto usado em pedidos", `${p.nome} aparece em ${usos} ${usos === 1 ? "pedido" : "pedidos"}. Em vez de excluir, ele será marcado como inativo e sairá da criação de novos pedidos.`, () => {
+        const inativo = { ...p, ativo: false };
+        executar(btnExcluirProduto, async () => {
+          aplicar(dados.produtos, inativo, await S.salvarProduto(inativo));
+          editandoProdutoId = null; render(); modalProduto.close(); toast("Produto marcado como inativo");
+        });
+      }, "Inativar");
+      return;
+    }
+    confirmar("Excluir produto?", `${p.nome} será removido do cadastro.`, () => {
+      executar(btnExcluirProduto, async () => {
+        await S.excluirProduto(p.id);
+        dados.produtos = dados.produtos.filter(x => x.id !== p.id);
+        editandoProdutoId = null; render(); modalProduto.close(); toast("Produto excluído");
+      }, "Excluindo…");
+    });
+  });
+
+  // ====================== PEDIDOS ======================
+  function nomeContato(id) { const c = dados.contatos.find(x => x.id === id); return c ? c.nome : "Contato removido"; }
+  function empresaContato(id) { const c = dados.contatos.find(x => x.id === id); return c ? c.empresa || "" : ""; }
+  function nomeProduto(id) { const p = dados.produtos.find(x => x.id === id); return p ? p.nome : "Produto removido"; }
+
+  function renderPedidos() {
+    const contagem = Object.fromEntries(STATUS_PEDIDO.map(s => [s.id, 0]));
+    for (const p of dados.pedidos) if (contagem[p.status] !== undefined) contagem[p.status]++;
+    $("funil-pedidos").innerHTML = STATUS_PEDIDO.map(s => `
+      <button type="button" data-status="${s.id}" aria-pressed="${filtroStatusPedido === s.id}" style="--cor:${s.cor};--tint:${s.tint}">
+        <span class="n">${contagem[s.id]}</span><span class="l">${esc(s.nome)}</span>
+      </button>`).join("");
+
+    const q = normaliza($("busca-pedidos").value.trim());
+    const lista = dados.pedidos.filter(p => {
+      if (filtroStatusPedido && p.status !== filtroStatusPedido) return false;
+      if (!q) return true;
+      const texto = nomeContato(p.contato_id) + " " + empresaContato(p.contato_id) + " " + (p.itens || []).map(i => nomeProduto(i.produto_id)).join(" ") + " " + (p.obs || "") + " #" + p.numero;
+      return normaliza(texto).includes(q);
+    }).sort((a, b) => (b.numero || 0) - (a.numero || 0));
+
+    const totalAberto = lista.filter(p => !["entregue", "cancelado"].includes(p.status)).reduce((t, p) => t + totalPedido(p), 0);
+    $("contador-pedidos").textContent = `${lista.length} ${lista.length === 1 ? "pedido" : "pedidos"} · ${moeda(totalAberto)} em aberto`;
+    $("vazio-pedidos").hidden = lista.length > 0;
+    $("vazio-pedidos").innerHTML = dados.pedidos.length === 0
+      ? "<strong>Nenhum pedido ainda</strong>Crie um pedido vinculando um contato aos produtos cadastrados."
+      : "<strong>Nada encontrado</strong>Tente outra busca ou limpe o filtro de status.";
+
+    $("linhas-pedidos").innerHTML = lista.map(p => {
+      const s = statusPedidoPorId[p.status] || STATUS_PEDIDO[0];
+      const itens = (p.itens || []).map(i => `${i.qtd}× ${esc(nomeProduto(i.produto_id))}`).join(", ");
+      const semPreco = (p.itens || []).some(i => !(Number(i.preco) > 0));
+      const dias = diasDesde(p.entrega);
+      const entregaUrgente = p.entrega && !["entregue", "cancelado"].includes(p.status) && dias !== null && dias >= -2;
+      const opcoes = STATUS_PEDIDO.map(o => `<option value="${o.id}" ${o.id === p.status ? "selected" : ""}>${esc(o.nome)}</option>`).join("");
+      return `
+        <tr data-id="${esc(p.id)}">
+          <td class="nome">#${esc(p.numero)}<span class="sub">${formataData(p.data)}</span></td>
+          <td class="rotulo" data-rotulo="Contato">${esc(nomeContato(p.contato_id))}${empresaContato(p.contato_id) ? `<span class="sub">${esc(empresaContato(p.contato_id))}</span>` : ""}</td>
+          <td class="objetivo rotulo" data-rotulo="Itens">${itens || "<span class='muted'>sem itens</span>"}</td>
+          <td class="data${entregaUrgente ? " atrasado" : ""}">${p.entrega ? formataData(p.entrega) : "<span class='muted'>—</span>"}${p.entrega ? `<small>${textoDias(dias)}</small>` : ""}</td>
+          <td><span class="pill" style="--cor:${s.cor};--tint:${s.tint}"><select aria-label="Status do pedido ${esc(p.numero)}" data-acao="status-pedido">${opcoes}</select></span></td>
+          <td class="num">${moeda(totalPedido(p))}${semPreco ? '<span class="sub" style="color:var(--ouro)">preço a definir</span>' : ""}</td>
+          <td class="acoes"><button class="btn btn-sutil" type="button" data-acao="editar-pedido">Editar</button></td>
+        </tr>`;
+    }).join("");
+  }
+  $("funil-pedidos").addEventListener("click", e => {
+    const b = e.target.closest("button[data-status]");
+    if (!b) return;
+    filtroStatusPedido = filtroStatusPedido === b.dataset.status ? "" : b.dataset.status;
+    renderPedidos();
+  });
+  $("busca-pedidos").addEventListener("input", renderPedidos);
+  $("linhas-pedidos").addEventListener("click", e => {
+    const b = e.target.closest("button[data-acao='editar-pedido']");
+    if (b) abrirEdicaoPedido(b.closest("tr").dataset.id);
+  });
+  $("linhas-pedidos").addEventListener("change", async e => {
+    const sel = e.target.closest("select[data-acao='status-pedido']");
+    if (!sel) return;
+    const p = dados.pedidos.find(x => x.id === sel.closest("tr").dataset.id);
+    if (!p || p.status === sel.value) return;
+    const anterior = p.status;
+    p.status = sel.value; render();
+    try {
+      aplicar(dados.pedidos, p, await S.salvarPedido(p));
+      toast(`Pedido #${p.numero} → ${statusPedidoPorId[p.status].nome}`);
+    } catch (err) {
+      p.status = anterior; render();
+      toast(mensagemErro(err), 4000);
+    }
+  });
+
+  // Modal pedido
+  function preencherContatos(selecionado) {
+    const lista = [...dados.contatos].sort((a, b) => String(a.nome).localeCompare(String(b.nome), "pt-BR", { sensitivity: "base" }));
+    oContato.innerHTML = '<option value="">Escolha o contato…</option>' + lista.map(c => `<option value="${esc(c.id)}" ${c.id === selecionado ? "selected" : ""}>${esc(c.nome)}${c.empresa ? " · " + esc(c.empresa) : ""}</option>`).join("");
+    if (selecionado) oContato.value = selecionado;
+  }
+  function produtosParaPedido(incluirId) {
+    return dados.produtos.filter(p => p.ativo !== false || p.id === incluirId);
+  }
+  function linhaItemHtml(item) {
+    const opcoes = produtosParaPedido(item.produto_id).map(p => `<option value="${esc(p.id)}" data-preco="${p.preco ?? ""}" ${p.id === item.produto_id ? "selected" : ""}>${esc(p.nome)}${p.ativo === false ? " (inativo)" : ""}</option>`).join("");
+    return `
+      <div class="item">
+        <select data-campo="produto" aria-label="Produto"><option value="">Produto…</option>${opcoes}</select>
+        <input data-campo="qtd" type="number" min="1" step="1" inputmode="numeric" value="${item.qtd ?? 1}" aria-label="Quantidade">
+        <input data-campo="preco" type="number" min="0" step="0.01" inputmode="decimal" value="${item.preco ?? ""}" placeholder="R$" aria-label="Preço unitário">
+        <span class="sub-total">${moeda((Number(item.qtd) || 0) * (Number(item.preco) || 0))}</span>
+        <button class="btn btn-sutil btn-icone" type="button" data-acao="remover-item" aria-label="Remover item">✕</button>
+      </div>`;
+  }
+  function adicionarItem(item) { elItens.insertAdjacentHTML("beforeend", linhaItemHtml(item || { produto_id: "", qtd: 1, preco: "" })); atualizarTotal(); }
+  function lerItens() {
+    return [...elItens.querySelectorAll(".item")].map(row => ({
+      produto_id: row.querySelector("[data-campo='produto']").value,
+      qtd: Number(row.querySelector("[data-campo='qtd']").value) || 0,
+      preco: row.querySelector("[data-campo='preco']").value === "" ? 0 : Number(row.querySelector("[data-campo='preco']").value) || 0,
+    }));
+  }
+  function atualizarTotal() {
+    let total = 0;
+    elItens.querySelectorAll(".item").forEach(row => {
+      const sub = (Number(row.querySelector("[data-campo='qtd']").value) || 0) * (Number(row.querySelector("[data-campo='preco']").value) || 0);
+      row.querySelector(".sub-total").textContent = moeda(sub);
+      total += sub;
+    });
+    oTotal.textContent = moeda(total);
+  }
+  elItens.addEventListener("input", atualizarTotal);
+  elItens.addEventListener("change", e => {
+    const sel = e.target.closest("select[data-campo='produto']");
+    if (sel) {
+      const preco = sel.selectedOptions[0]?.dataset.preco;
+      const campoPreco = sel.closest(".item").querySelector("[data-campo='preco']");
+      if (preco !== undefined && preco !== "" && campoPreco.value === "") campoPreco.value = preco;
+      atualizarTotal();
+    }
+  });
+  elItens.addEventListener("click", e => {
+    const b = e.target.closest("button[data-acao='remover-item']");
+    if (b) { b.closest(".item").remove(); atualizarTotal(); }
+  });
+  $("btn-add-item").addEventListener("click", () => { adicionarItem(); elItens.lastElementChild.querySelector("select").focus(); });
+
+  $("btn-novo-pedido").addEventListener("click", () => abrirNovoPedido());
+  function abrirNovoPedido(contatoId) {
+    if (dados.contatos.length === 0) { toast("Cadastre um contato antes de criar um pedido."); mostrarAba("contatos"); return; }
+    if (produtosParaPedido().length === 0) { toast("Cadastre um produto antes de criar um pedido."); mostrarAba("produtos"); return; }
+    editandoPedidoId = null;
+    $("modal-pedido-titulo").textContent = "Novo pedido";
+    formPedido.reset();
+    preencherContatos(contatoId || "");
+    oStatus.value = "orcamento"; oData.value = hojeIso(); oEntrega.value = ""; oObs.value = "";
+    elItens.innerHTML = ""; adicionarItem();
+    btnExcluirPedido.hidden = true;
+    modalPedido.showModal();
+    (contatoId ? elItens.querySelector("select") : oContato).focus();
+  }
+  function abrirEdicaoPedido(id) {
+    const p = dados.pedidos.find(x => x.id === id);
+    if (!p) return;
+    editandoPedidoId = id;
+    $("modal-pedido-titulo").textContent = `Editar pedido #${p.numero}`;
+    preencherContatos(p.contato_id);
+    oStatus.value = p.status; oData.value = p.data || hojeIso(); oEntrega.value = p.entrega || ""; oObs.value = p.obs || "";
+    elItens.innerHTML = "";
+    (p.itens && p.itens.length ? p.itens : [null]).forEach(i => adicionarItem(i));
+    btnExcluirPedido.hidden = false;
+    modalPedido.showModal();
+  }
+  $("btn-cancelar-pedido").addEventListener("click", () => modalPedido.close());
+  formPedido.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!oContato.value) { oContato.focus(); toast("Escolha o contato do pedido."); return; }
+    if (!oData.value) { oData.focus(); oData.reportValidity(); return; }
+    const itens = lerItens().filter(i => i.produto_id && i.qtd > 0);
+    if (itens.length === 0) { toast("Adicione pelo menos um produto com quantidade."); elItens.querySelector("select")?.focus(); return; }
+    const d = { contato_id: oContato.value, status: oStatus.value, data: oData.value, entrega: oEntrega.value || "", obs: oObs.value.trim(), itens };
+    const atual = editandoPedidoId ? dados.pedidos.find(x => x.id === editandoPedidoId) : null;
+    // O número do pedido vem do banco (sequência): ao criar, manda null
+    const p = atual ? { ...atual, ...d } : { id: uid(), numero: null, ...d };
+    executar(btnSalvarPedido, async () => {
+      const salvo = aplicar(dados.pedidos, p, await S.salvarPedido(p));
+      if (atual) {
+        toast(`Pedido #${salvo.numero} atualizado`);
+      } else {
+        // Um pedido novo avança o contato no funil
+        const c = dados.contatos.find(x => x.id === p.contato_id);
+        let novoStatus = null;
+        if (c && ["novo", "conversa", "degustacao"].includes(c.status)) novoStatus = "proposta";
+        if (c && p.status !== "orcamento" && p.status !== "cancelado") novoStatus = "fechado";
+        if (c && novoStatus && novoStatus !== c.status) {
+          const c2 = { ...c, status: novoStatus, data: hojeIso() };
+          try { aplicar(dados.contatos, c2, await S.salvarContato(c2)); }
+          catch (err) { toast(mensagemErro(err), 4000); }
+        }
+        toast(`Pedido #${salvo.numero} criado`);
+      }
+      editandoPedidoId = null; render(); modalPedido.close();
+      mostrarAba("pedidos");
+    });
+  });
+  btnExcluirPedido.addEventListener("click", () => {
+    const p = dados.pedidos.find(x => x.id === editandoPedidoId);
+    if (!p) return;
+    confirmar("Excluir pedido?", `O pedido #${p.numero} de ${nomeContato(p.contato_id)} será removido.`, () => {
+      executar(btnExcluirPedido, async () => {
+        await S.excluirPedido(p.id);
+        dados.pedidos = dados.pedidos.filter(x => x.id !== p.id);
+        editandoPedidoId = null; render(); modalPedido.close(); toast("Pedido excluído");
+      }, "Excluindo…");
+    });
+  });
+
+  // ====================== USUÁRIOS ======================
+  function situacaoUsuario(u) {
+    if (u.ativo === false) return { nome: "Desativado", cor: "#7c6a5d", tint: "var(--surface-2)" };
+    if ("auth_id" in u && (u.auth_id === null || u.auth_id === undefined || u.auth_id === "")) return { nome: "Aguardando primeiro acesso", cor: "#a87f2a", tint: "var(--ouro-tint)" };
+    return { nome: "Ativo", cor: "#3f8a4b", tint: "var(--verde-tint)" };
+  }
+  function renderUsuarios() {
+    const admin = ehAdmin();
+    $("btn-novo-usuario").hidden = !admin;
+    const lista = [...dados.usuarios].sort((a, b) => String(a.nome ?? "").localeCompare(String(b.nome ?? ""), "pt-BR", { sensitivity: "base" }));
+    $("contador-usuarios").textContent = `${lista.length} ${lista.length === 1 ? "usuário" : "usuários"}`;
+    $("vazio-usuarios").hidden = lista.length > 0;
+    $("vazio-usuarios").innerHTML = admin
+      ? "<strong>Nenhum usuário cadastrado</strong>Cadastre as pessoas que vão usar o CRM."
+      : "<strong>Nenhum usuário cadastrado</strong>Peça a um administrador para cadastrar as pessoas do time.";
+    $("linhas-usuarios").innerHTML = lista.map(u => {
+      const papel = PAPEIS[u.papel] || PAPEIS.vendedor;
+      const sit = situacaoUsuario(u);
+      const souEu = usuario && u.id === usuario.id;
+      return `
+        <tr data-id="${esc(u.id)}">
+          <td class="nome">${esc(u.nome)}${souEu ? '<span class="tag-voce">você</span>' : ""}</td>
+          <td class="rotulo" data-rotulo="E-mail">${esc(u.email) || "<span class='muted'>sem e-mail</span>"}</td>
+          <td><span class="pill mini" style="--cor:${papel.cor};--tint:${papel.tint}">${esc(papel.nome)}</span></td>
+          <td><span class="pill mini" style="--cor:${sit.cor};--tint:${sit.tint}">${esc(sit.nome)}</span></td>
+          <td class="acoes">${admin ? '<button class="btn btn-sutil" type="button" data-acao="editar-usuario">Editar</button>' : ""}</td>
+        </tr>`;
+    }).join("");
+  }
+  $("linhas-usuarios").addEventListener("click", e => {
+    const b = e.target.closest("button[data-acao='editar-usuario']");
+    if (b && ehAdmin()) abrirEdicaoUsuario(b.closest("tr").dataset.id);
+  });
+  $("btn-novo-usuario").addEventListener("click", () => {
+    if (!ehAdmin()) return;
+    editandoUsuarioId = null;
+    $("modal-usuario-titulo").textContent = "Novo usuário";
+    formUsuario.reset(); uPapel.value = "vendedor"; uAtivo.checked = true;
+    btnExcluirUsuario.hidden = true;
+    modalUsuario.showModal(); uNome.focus();
+  });
+  function abrirEdicaoUsuario(id) {
+    const u = dados.usuarios.find(x => x.id === id);
+    if (!u) return;
+    editandoUsuarioId = id;
+    $("modal-usuario-titulo").textContent = "Editar usuário";
+    uNome.value = u.nome || ""; uEmail.value = u.email || ""; uPapel.value = PAPEIS[u.papel] ? u.papel : "vendedor"; uAtivo.checked = u.ativo !== false;
+    btnExcluirUsuario.hidden = !!(usuario && u.id === usuario.id);
+    modalUsuario.showModal(); uNome.focus();
+  }
+  $("btn-cancelar-usuario").addEventListener("click", () => modalUsuario.close());
+  formUsuario.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!ehAdmin()) { toast("Só administradores podem alterar usuários."); return; }
+    const nome = uNome.value.trim();
+    if (!nome) { uNome.focus(); uNome.reportValidity(); return; }
+    const email = uEmail.value.trim().toLowerCase();
+    if (email && !emailValido(email)) { uEmail.focus(); toast("Digite um e-mail válido ou deixe em branco."); return; }
+    const d = { nome, email, papel: uPapel.value, ativo: uAtivo.checked };
+    const atual = editandoUsuarioId ? dados.usuarios.find(x => x.id === editandoUsuarioId) : null;
+    const souEu = !!(usuario && atual && atual.id === usuario.id);
+    if (souEu && (!d.ativo || d.papel !== "admin")) { toast("Você não pode desativar nem rebaixar o seu próprio usuário."); return; }
+    if (email && dados.usuarios.some(x => x.id !== (atual && atual.id) && String(x.email || "").toLowerCase() === email)) { uEmail.focus(); toast("Já existe um usuário com esse e-mail."); return; }
+    const u = atual ? { ...atual, ...d } : { id: uid(), ...d };
+    executar(btnSalvarUsuario, async () => {
+      aplicar(dados.usuarios, u, await S.salvarUsuario(u));
+      if (souEu) { usuario = { ...usuario, nome: u.nome, email: u.email }; renderUsuarioTopo(); }
+      render(); modalUsuario.close();
+      if (email) toast(atual ? "Usuário atualizado" : "Usuário cadastrado");
+      else toast("Usuário salvo sem e-mail: essa pessoa só conseguirá entrar depois que um e-mail for cadastrado.", 5000);
+    });
+  });
+  btnExcluirUsuario.addEventListener("click", () => {
+    const u = dados.usuarios.find(x => x.id === editandoUsuarioId);
+    if (!u || !ehAdmin()) return;
+    if (usuario && u.id === usuario.id) { toast("Você não pode excluir o seu próprio usuário."); return; }
+    confirmar("Excluir usuário?", `${u.nome}${u.email ? " · " + u.email : ""} perderá o acesso ao CRM.`, () => {
+      executar(btnExcluirUsuario, async () => {
+        await S.excluirUsuario(u.id);
+        dados.usuarios = dados.usuarios.filter(x => x.id !== u.id);
+        editandoUsuarioId = null; render(); modalUsuario.close(); toast("Usuário excluído");
+      }, "Excluindo…");
+    });
+  });
+
+  // ====================== Confirmação genérica ======================
+  function confirmar(titulo, texto, acao, rotulo) {
+    confirmaTitulo.textContent = titulo; confirmaTexto.textContent = texto;
+    modalConfirma.querySelector("button[value='sim']").textContent = rotulo || "Excluir";
+    confirmaAcao = acao; modalConfirma.returnValue = ""; modalConfirma.showModal();
+  }
+  // A ação roda no clique do botão de confirmação (não no evento "close" do dialog,
+  // que pode chegar atrasado); "Manter" e Esc fecham o dialog sem fazer nada.
+  modalConfirma.querySelector("button[value='sim']").addEventListener("click", e => {
+    e.preventDefault();
+    const acao = confirmaAcao; confirmaAcao = null;
+    modalConfirma.close("sim");
+    if (acao) acao();
+  });
+
+  // ====================== Exportar / backup ======================
+  async function baixar(nome, conteudo, tipo) {
+    try {
+      const dl = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
+      if (dl) { await dl.save({ filename: nome, data: conteudo }); toast("Arquivo pronto: " + nome); return; }
+    } catch (e) { if (e && e.code !== "cancelled") toast("Não foi possível baixar."); return; }
+    try {
+      const blob = new Blob([conteudo], { type: tipo });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = nome;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      toast("Arquivo pronto: " + nome);
+    } catch (e) { toast("Não foi possível baixar."); }
+  }
+  function carimbo() { return hojeIso().replaceAll("-", ""); }
+  const cel = v => '"' + String(v ?? "").replaceAll('"', '""') + '"';
+
+  $("btn-csv").addEventListener("click", () => {
+    const abaAtiva = document.querySelector(".abas [aria-selected='true']").dataset.aba;
+    let linhas, nome;
+    if (abaAtiva === "pedidos") {
+      nome = `mrbrown-pedidos-${carimbo()}.csv`;
+      linhas = [["Pedido", "Data", "Contato", "Empresa", "Entrega", "Status", "Itens", "Total", "Observações"].map(cel).join(";")];
+      for (const p of [...dados.pedidos].sort((a, b) => (a.numero || 0) - (b.numero || 0))) linhas.push([p.numero, formataData(p.data), nomeContato(p.contato_id), empresaContato(p.contato_id), formataData(p.entrega), statusPedidoPorId[p.status]?.nome || p.status, (p.itens || []).map(i => `${i.qtd}x ${nomeProduto(i.produto_id)}`).join(" | "), totalPedido(p).toFixed(2).replace(".", ","), p.obs].map(cel).join(";"));
+    } else if (abaAtiva === "produtos") {
+      nome = `mrbrown-produtos-${carimbo()}.csv`;
+      linhas = [["Produto", "Categoria", "Selo", "Preço", "Ativo", "Descrição"].map(cel).join(";")];
+      for (const p of dados.produtos) linhas.push([p.nome, p.categoria, p.selo, p.preco === null || p.preco === undefined ? "" : Number(p.preco).toFixed(2).replace(".", ","), p.ativo === false ? "Não" : "Sim", p.descricao].map(cel).join(";"));
+    } else if (abaAtiva === "usuarios") {
+      nome = `mrbrown-usuarios-${carimbo()}.csv`;
+      linhas = [["Nome", "E-mail", "Papel", "Situação"].map(cel).join(";")];
+      for (const u of dados.usuarios) linhas.push([u.nome, u.email, (PAPEIS[u.papel] || PAPEIS.vendedor).nome, situacaoUsuario(u).nome].map(cel).join(";"));
+    } else {
+      nome = `mrbrown-contatos-${carimbo()}.csv`;
+      linhas = [["Nome", "Empresa", "Data", "Status", "Objetivo", "Pedidos"].map(cel).join(";")];
+      for (const c of contatosFiltrados()) linhas.push([c.nome, c.empresa, formataData(c.data), statusPorId[c.status]?.nome || c.status, c.objetivo, pedidosDoContato(c.id).length].map(cel).join(";"));
+    }
+    baixar(nome, "\uFEFF" + linhas.join("\r\n"), "text/csv;charset=utf-8");
+  });
+  $("btn-backup").addEventListener("click", () => {
+    baixar(`mrbrown-crm-backup-${carimbo()}.json`, JSON.stringify({ app: "mrbrown-crm", versao: 3, exportadoEm: new Date().toISOString(), ...dados }, null, 2), "application/json");
+  });
+  $("btn-restaurar").addEventListener("click", () => $("arquivo-restaurar").click());
+  $("arquivo-restaurar").addEventListener("change", e => {
+    const arq = e.target.files && e.target.files[0];
+    if (!arq) return;
+    const leitor = new FileReader();
+    leitor.onload = async () => {
+      e.target.value = "";
+      let obj;
+      try { obj = JSON.parse(leitor.result); } catch (err) { toast("Esse arquivo não parece um backup do Mr. Brown CRM."); return; }
+      const contatos = Array.isArray(obj) ? obj : obj && obj.contatos;
+      if (!Array.isArray(contatos)) { toast("Esse arquivo não parece um backup do Mr. Brown CRM."); return; }
+      const produtos = Array.isArray(obj.produtos) ? obj.produtos : [];
+      const pedidos = Array.isArray(obj.pedidos) ? obj.pedidos : [];
+
+      // Normaliza registros (aceita backups antigos em camelCase: contatoId, produtoId, doSite)
+      const fila = [];
+      for (const p of produtos) if (p && p.nome) fila.push({ tipo: "produto", item: { id: String(p.id || uid()), nome: String(p.nome), categoria: String(p.categoria || "Outro"), selo: String(p.selo || ""), preco: p.preco === null || p.preco === undefined || p.preco === "" ? null : Number(p.preco), descricao: String(p.descricao || ""), ativo: p.ativo !== false, do_site: !!(p.do_site ?? p.doSite) } });
+      for (const c of contatos) if (c && c.nome) fila.push({ tipo: "contato", item: { id: String(c.id || uid()), nome: String(c.nome), empresa: String(c.empresa || ""), data: c.data || hojeIso(), status: statusPorId[c.status] ? c.status : "novo", objetivo: String(c.objetivo || "") } });
+      const idsContatos = new Set([...dados.contatos.map(c => c.id), ...fila.filter(f => f.tipo === "contato").map(f => f.item.id)]);
+      const idsProdutos = new Set([...dados.produtos.map(p => p.id), ...fila.filter(f => f.tipo === "produto").map(f => f.item.id)]);
+      let pedidosPulados = 0;
+      for (const p of pedidos) {
+        const contatoId = p && (p.contato_id ?? p.contatoId);
+        if (!contatoId) continue;
+        if (!idsContatos.has(contatoId)) { pedidosPulados++; continue; }
+        const existente = dados.pedidos.find(x => x.id === p.id);
+        const itens = (Array.isArray(p.itens) ? p.itens : []).map(i => ({ produto_id: i.produto_id ?? i.produtoId, qtd: Number(i.qtd) || 0, preco: Number(i.preco) || 0 })).filter(i => i.produto_id && idsProdutos.has(i.produto_id) && i.qtd > 0);
+        fila.push({ tipo: "pedido", item: { id: String(p.id || uid()), numero: existente ? existente.numero : null, contato_id: contatoId, data: p.data || hojeIso(), entrega: p.entrega || "", status: statusPedidoPorId[p.status] ? p.status : "orcamento", obs: String(p.obs || ""), itens } });
+      }
+      if (fila.length === 0) { toast("O backup não tem registros para restaurar."); return; }
+
+      // Restaura um por um (produtos → contatos → pedidos), mostrando o progresso
+      const btn = $("btn-restaurar");
+      btn.disabled = true;
+      let feitos = 0, erros = 0, ultimoErro = "";
+      for (const f of fila) {
+        toast(`Restaurando… ${feitos + 1} de ${fila.length}`, 60000);
+        try {
+          if (f.tipo === "produto") aplicar(dados.produtos, f.item, await S.salvarProduto(f.item));
+          else if (f.tipo === "contato") aplicar(dados.contatos, f.item, await S.salvarContato(f.item));
+          else aplicar(dados.pedidos, f.item, await S.salvarPedido(f.item));
+        } catch (err) { erros++; ultimoErro = mensagemErro(err); }
+        feitos++;
+      }
+      btn.disabled = false;
+      render();
+      const partes = [`Backup restaurado · ${fila.length - erros} ${fila.length - erros === 1 ? "registro" : "registros"}`];
+      if (erros) partes.push(`${erros} com erro (${ultimoErro})`);
+      if (pedidosPulados) partes.push(`${pedidosPulados} ${pedidosPulados === 1 ? "pedido sem contato ignorado" : "pedidos sem contato ignorados"}`);
+      toast(partes.join(" · "), erros || pedidosPulados ? 6000 : 3000);
+    };
+    leitor.readAsText(arq);
+  });
+
+  // ---------- Toast ----------
+  let toastTimer;
+  function toast(msg, duracao) {
+    const t = $("toast");
+    t.textContent = msg; t.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("on"), duracao || 2600);
+  }
+
+  // Atalho: N abre novo contato (fora de campos e modais, com o app aberto)
+  document.addEventListener("keydown", e => {
+    if (appPronto && e.key.toLowerCase() === "n" && !e.ctrlKey && !e.metaKey && !e.altKey && !document.querySelector("dialog[open]") && !/input|select|textarea/i.test(e.target.tagName)) {
+      e.preventDefault(); abrirNovo();
+    }
+  });
+
+  iniciar();
+})();
+</script>
