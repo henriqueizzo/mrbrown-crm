@@ -17,6 +17,6 @@
 // Depois de preencher e publicar, o app passa a usar o Supabase (modo online,
 // com login por e-mail/senha e sincronização em tempo real).
 window.MRBROWN_CONFIG = {
-  SUPABASE_URL: "COLE_AQUI_A_URL_DO_PROJETO",       // ex.: https://xxxx.supabase.co
-  SUPABASE_ANON_KEY: "COLE_AQUI_A_ANON_KEY",         // Project Settings → API → anon public
+  SUPABASE_URL: "https://pnbvyebkiwusrshavwye.supabase.co",       // ex.: https://xxxx.supabase.co
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBuYnZ5ZWJraXd1c3JzaGF2d3llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxNTU3NDksImV4cCI6MjEwNDczMTc0OX0.hge_mMs4Gv4JFNLTcdnlonaOqDvpijFJyIfZXyekNOE",         // Project Settings → API → anon public
 };
