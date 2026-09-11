@@ -1,0 +1,18 @@
+# Configuração remota do projeto Supabase (aplicada com `npx supabase config push --project-ref pnbvyebkiwusrshavwye`).
+# Só o que está declarado aqui é enviado; o resto do projeto fica como está.
+project_id = "pnbvyebkiwusrshavwye"
+
+[auth]
+# Para onde os links de confirmação / redefinição de senha voltam.
+site_url = "https://henriqueizzo.github.io/mrbrown-crm/"
+additional_redirect_urls = [
+  "https://henriqueizzo.github.io/mrbrown-crm/**",
+  "http://localhost:*/**",
+  "http://127.0.0.1:*/**",
+]
+
+[auth.email]
+enable_signup = true
+# false = quem cria a senha no "Primeiro acesso" entra na hora, sem clicar em e-mail.
+# (o cadastro já é restrito aos e-mails da aba Usuários pelo trigger do schema.sql)
+enable_confirmations = false
